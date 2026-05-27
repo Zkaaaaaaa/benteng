@@ -5,32 +5,24 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Product;
-use Illuminate\Support\Carbon;
 
 class DashboardController extends Controller
 {
     public function index()
     {
         // ── Stat cards ────────────────────────────────────────────
-        $totalProducts      = Product::count();
-        $totalCategories    = Category::count();
-        $inStockCount       = Product::where('stock', '>', 0)->count();
-        $outOfStockCount    = Product::where('stock', '<=', 0)->count();
-        $totalStockValue    = Product::selectRaw('SUM(price * stock) as total')->value('total') ?? 0;
-        $newProductsThisMonth = Product::whereMonth('created_at', now()->month)
-                                       ->whereYear('created_at', now()->year)
-                                       ->count();
+        $totalProducts = Product::query()->count('*');
+        $totalCategories = Category::query()->count('*');
+
+        $startOfMonth = now()->startOfMonth();
+        $newProductsThisMonth = Product::query()
+            ->where('created_at', '>=', $startOfMonth)
+            ->where('created_at', '<', $startOfMonth->copy()->addMonth())
+            ->count('*');
 
         // ── Recent products (laatste 6) ───────────────────────────
         $recentProducts = Product::with('category')
             ->latest()
-            ->take(6)
-            ->get();
-
-        // ── Low stock (≤ 5, inclusief uitverkocht) ────────────────
-        $lowStockProducts = Product::with('category')
-            ->where('stock', '<=', 5)
-            ->orderBy('stock', 'asc')
             ->take(6)
             ->get();
 
@@ -54,12 +46,8 @@ class DashboardController extends Controller
         return view('admin.dashboard', compact(
             'totalProducts',
             'totalCategories',
-            'inStockCount',
-            'outOfStockCount',
-            'totalStockValue',
             'newProductsThisMonth',
             'recentProducts',
-            'lowStockProducts',
             'categories',
             'categoryChartData',
             'recentActivities',

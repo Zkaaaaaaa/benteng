@@ -17,8 +17,9 @@ class Product extends Model
         'slug',
         'price',
         'unit_label',
-        'stock',
         'description',
+        'description_en',
+        'description_nl',
         'image',
         'is_spicy',
         'sort_order',
@@ -32,7 +33,6 @@ class Product extends Model
             'is_spicy' => 'boolean',
             'is_active' => 'boolean',
             'sort_order' => 'integer',
-            'stock' => 'integer',
         ];
     }
 

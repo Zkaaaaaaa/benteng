@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 
@@ -14,7 +15,7 @@ class ProductController extends Controller
     public function index()
     {
         $products = Product::with('category')->latest()->get();
-        $categories = Category::orderBy('name')->get();
+        $categories = Category::orderBy('name', 'asc')->get();
         return view('admin.product.index', compact('products', 'categories'));
     }
 
@@ -24,8 +25,8 @@ class ProductController extends Controller
             'category_id' => 'required|exists:categories,id',
             'name' => 'required|string|max:255|unique:products,name',
             'price' => 'required|numeric|min:0',
-            'stock' => 'required|integer|min:0',
-            'description' => 'nullable|string',
+            'description_en' => 'nullable|string',
+            'description_nl' => 'nullable|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
 
@@ -39,8 +40,9 @@ class ProductController extends Controller
             'name' => $request->name,
             'slug' => Str::slug($request->name),
             'price' => $request->price,
-            'stock' => $request->stock,
-            'description' => $request->description,
+            'description_en' => $request->description_en,
+            'description_nl' => $request->description_nl,
+            'description' => $request->description_en ?: $request->description_nl,
             'image' => $imagePath,
         ]);
 
@@ -51,10 +53,10 @@ class ProductController extends Controller
     {
         $request->validate([
             'category_id' => 'required|exists:categories,id',
-            'name' => 'required|string|max:255|unique:products,name,' . $product->id,
+            'name' => ['required', 'string', 'max:255', Rule::unique('products', 'name')->ignore($product->getKey())],
             'price' => 'required|numeric|min:0',
-            'stock' => 'required|integer|min:0',
-            'description' => 'nullable|string',
+            'description_en' => 'nullable|string',
+            'description_nl' => 'nullable|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
 
@@ -71,8 +73,9 @@ class ProductController extends Controller
             'name' => $request->name,
             'slug' => Str::slug($request->name),
             'price' => $request->price,
-            'stock' => $request->stock,
-            'description' => $request->description,
+            'description_en' => $request->description_en,
+            'description_nl' => $request->description_nl,
+            'description' => $request->description_en ?: $request->description_nl,
             'image' => $imagePath,
         ]);
 
@@ -84,7 +87,7 @@ class ProductController extends Controller
         if ($product->image) {
             Storage::disk('public')->delete($product->image);
         }
-        $product->delete();
+        Product::destroy($product->id);
         return back()->with('success', 'Produk berhasil dihapus!');
     }
 }

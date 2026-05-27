@@ -198,7 +198,6 @@ class MenuSeeder extends Seeder
                     'unit_label' => $productData['unit_label'] ?? null,
                     'is_spicy' => $productData['is_spicy'] ?? false,
                     'sort_order' => $productSort + 1,
-                    'stock' => 100,
                     'is_active' => true,
                 ]);
             }

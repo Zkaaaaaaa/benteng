@@ -68,7 +68,6 @@
                     <th>Nama Produk</th>
                     <th>Kategori</th>
                     <th>Harga</th>
-                    <th>Stok</th>
                     <th style="width:180px; text-align:right; padding-right:24px;">Aksi</th>
                 </tr>
             </thead>
@@ -87,10 +86,10 @@
                         </td>
                         <td>
                             <div style="font-weight:600; color:var(--btg-text); font-size: 14px;">{{ $product->name }}</div>
-                            @if ($product->description)
+                            @if ($product->description_en || $product->description_nl || $product->description)
                                 <div style="font-size:11.5px; color:var(--btg-muted); margin-top:2px; max-width: 280px; line-height: 1.4;"
                                     class="text-wrap">
-                                    {{ Str::limit($product->description, 60) }}
+                                    {{ Str::limit($product->description_en ?: ($product->description_nl ?: $product->description), 60) }}
                                 </div>
                             @endif
                         </td>
@@ -109,27 +108,9 @@
                                 {{ number_format($product->price, 2, ',', '.') }}</strong>
                         </td>
                         <td>
-                            @if ($product->stock > 5)
-                                <span class="slug-badge"
-                                    style="background:#e8f8f5; color:#117a65; font-family:'DM Sans',sans-serif; font-weight: 600;">
-                                    {{ $product->stock }} pcs
-                                </span>
-                            @elseif($product->stock > 0)
-                                <span class="slug-badge"
-                                    style="background:#fef9e7; color:#b7950b; font-family:'DM Sans',sans-serif; font-weight: 600;">
-                                    {{ $product->stock }} pcs (Hampir Habis)
-                                </span>
-                            @else
-                                <span class="slug-badge"
-                                    style="background:#fadbd8; color:#922b21; font-family:'DM Sans',sans-serif; font-weight: 600;">
-                                    Habis
-                                </span>
-                            @endif
-                        </td>
-                        <td>
                             <div class="action-group" style="justify-content:flex-end;">
                                 <button class="btn-action edit"
-                                    onclick="openEdit('{{ $product->id }}', '{{ addslashes($product->name) }}', '{{ $product->category_id }}', '{{ $product->price }}', '{{ $product->stock }}', '{{ addslashes($product->description) }}', '{{ $product->image ? asset('storage/' . $product->image) : '' }}')">
+                                    onclick="openEdit('{{ $product->id }}', '{{ addslashes($product->name) }}', '{{ $product->category_id }}', '{{ $product->price }}', @js($product->description_en), @js($product->description_nl), '{{ $product->image ? asset('storage/' . $product->image) : '' }}')">
                                     <i class="fas fa-pen"></i> Edit
                                 </button>
                                 <button class="btn-action delete"
@@ -141,7 +122,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="7">
+                        <td colspan="6">
                             <div class="empty-state">
                                 <div class="empty-icon"><i class="fas fa-utensils"></i></div>
                                 <p>Belum ada produk. Mulai dengan menambahkan produk pertama.</p>
@@ -191,12 +172,13 @@
         });
 
         // ── Edit ────────────────────────────────────────────
-        function openEdit(id, name, categoryId, price, stock, description, imageSrc) {
+        function openEdit(id, name, categoryId, price, descriptionEn, descriptionNl, imageSrc) {
+            document.getElementById('edit-id').value = id;
             document.getElementById('edit-name').value = name;
             document.getElementById('edit-category_id').value = categoryId;
             document.getElementById('edit-price').value = price;
-            document.getElementById('edit-stock').value = stock;
-            document.getElementById('edit-description').value = description;
+            document.getElementById('edit-description_en').value = descriptionEn ?? '';
+            document.getElementById('edit-description_nl').value = descriptionNl ?? '';
 
             // Preview Image handling
             if (imageSrc) {

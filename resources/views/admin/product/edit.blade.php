@@ -13,6 +13,7 @@
         <form id="form-edit" method="POST" enctype="multipart/form-data" style="margin: 0;">
             @csrf
             @method('PUT')
+            <input type="hidden" name="_edit_id" id="edit-id" value="{{ old('_edit_id') }}">
 
             <div class="btg-modal-body">
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
@@ -37,31 +38,30 @@
                             </select>
                         </div>
 
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px;">
-                            <div>
-                                <label class="btg-label" for="edit-price">
-                                    Harga (€) <span>*</span>
-                                </label>
-                                <input type="number" class="btg-input" id="edit-price" name="price" step="0.01"
-                                    min="0" required placeholder="12.50">
-                            </div>
-                            <div>
-                                <label class="btg-label" for="edit-stock">
-                                    Stok <span>*</span>
-                                </label>
-                                <input type="number" class="btg-input" id="edit-stock" name="stock" min="0"
-                                    required placeholder="50">
-                            </div>
+                        <div style="margin-bottom: 16px;">
+                            <label class="btg-label" for="edit-price">
+                                Harga (€) <span>*</span>
+                            </label>
+                            <input type="number" class="btg-input" id="edit-price" name="price" step="0.01"
+                                min="0" required placeholder="12.50">
                         </div>
                     </div>
 
                     <div>
                         <div style="margin-bottom: 16px;">
-                            <label class="btg-label" for="edit-description">
-                                Deskripsi
+                            <label class="btg-label" for="edit-description_en">
+                                Description (EN)
                             </label>
-                            <textarea class="btg-input" id="edit-description" name="description" rows="3" placeholder="Deskripsi produk..."
-                                style="resize: vertical; min-height: 80px;"></textarea>
+                            <textarea class="btg-input" id="edit-description_en" name="description_en" rows="3"
+                                placeholder="Description in English..." style="resize: vertical; min-height: 80px;"></textarea>
+                        </div>
+
+                        <div style="margin-bottom: 16px;">
+                            <label class="btg-label" for="edit-description_nl">
+                                Beschrijving (NL)
+                            </label>
+                            <textarea class="btg-input" id="edit-description_nl" name="description_nl" rows="3"
+                                placeholder="Beschrijving in het Nederlands..." style="resize: vertical; min-height: 80px;"></textarea>
                         </div>
 
                         <div style="margin-bottom: 12px;">
@@ -100,6 +100,19 @@
 {{-- Auto-open jika ada validation error dari form edit --}}
 @if ($errors->any() && old('_method') === 'PUT')
     <script>
-        document.addEventListener('DOMContentLoaded', () => openModal('modal-edit'));
+        document.addEventListener('DOMContentLoaded', () => {
+            const editId = @json(old('_edit_id'));
+            if (editId) {
+                document.getElementById('form-edit').action = '/admin/products/' + editId;
+            }
+
+            document.getElementById('edit-name').value = @json(old('name', ''));
+            document.getElementById('edit-category_id').value = @json(old('category_id', ''));
+            document.getElementById('edit-price').value = @json(old('price', ''));
+            document.getElementById('edit-description_en').value = @json(old('description_en', ''));
+            document.getElementById('edit-description_nl').value = @json(old('description_nl', ''));
+
+            openModal('modal-edit');
+        });
     </script>
 @endif

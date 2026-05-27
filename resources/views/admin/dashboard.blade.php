@@ -9,7 +9,7 @@
         /* ── STAT CARDS ─────────────────────── */
         .stat-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(2, 1fr);
             gap: 16px;
             margin-bottom: 24px;
         }
@@ -333,7 +333,7 @@
         /* ── BOTTOM ROW ──────────────────────── */
         .bottom-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 1fr;
             gap: 20px;
         }
 
@@ -436,30 +436,6 @@
             </div>
         </div>
 
-        <div class="stat-card" style="--card-accent: #27ae60;">
-            <div class="stat-top">
-                <div class="stat-label">Stok Tersedia</div>
-                <div class="stat-icon" style="background:#27ae60;"><i class="fas fa-box-open"></i></div>
-            </div>
-            <div class="stat-value">{{ $inStockCount ?? 0 }}</div>
-            <div class="stat-sub">
-                <span class="down"><i class="fas fa-exclamation-circle"></i> {{ $outOfStockCount ?? 0 }}</span>
-                produk habis
-            </div>
-        </div>
-
-        <div class="stat-card" style="--card-accent: #8e44ad;">
-            <div class="stat-top">
-                <div class="stat-label">Nilai Stok</div>
-                <div class="stat-icon" style="background:#8e44ad;"><i class="fas fa-euro-sign"></i></div>
-            </div>
-            <div class="stat-value">€ {{ number_format($totalStockValue ?? 0, 0, ',', '.') }}</div>
-            <div class="stat-sub">
-                <i class="fas fa-info-circle"></i>
-                estimasi nilai inventori
-            </div>
-        </div>
-
     </div>
 
     {{-- ── MAIN GRID: Chart + Sidebar ── --}}
@@ -490,7 +466,6 @@
                             <th>Nama Produk</th>
                             <th>Kategori</th>
                             <th>Harga</th>
-                            <th>Stok</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -518,15 +493,6 @@
                                     € {{ number_format($product->price, 2, ',', '.') }}
                                 </td>
                                 <td>
-                                    @if ($product->stock > 10)
-                                        <span class="badge-stock ok">{{ $product->stock }}</span>
-                                    @elseif($product->stock > 0)
-                                        <span class="badge-stock low">{{ $product->stock }}</span>
-                                    @else
-                                        <span class="badge-stock empty">Habis</span>
-                                    @endif
-                                </td>
-                                <td>
                                     <a href="{{ route('admin.products.edit', $product) }}"
                                         style="font-size:12px; color:var(--btg-accent); text-decoration:none;">
                                         Edit
@@ -535,7 +501,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="6"
+                                <td colspan="5"
                                     style="text-align:center; color:var(--btg-muted); font-size:13px; padding:24px 0;">
                                     Belum ada produk.
                                 </td>
@@ -610,38 +576,6 @@
 
     {{-- ── BOTTOM ROW ── --}}
     <div class="bottom-grid">
-
-        {{-- Stok rendah --}}
-        <div class="panel">
-            <div class="panel-head">
-                <div class="panel-title">⚠️ Stok Hampir Habis</div>
-                <a href="{{ route('admin.products.index') }}" class="panel-action">Lihat semua →</a>
-            </div>
-            <div class="panel-body" style="padding-top:8px;">
-                @forelse($lowStockProducts ?? [] as $product)
-                    <div
-                        style="display:flex; align-items:center; justify-content:space-between; padding:10px 0; border-bottom:1px solid #f5f0eb;">
-                        <div>
-                            <div style="font-size:13px; font-weight:500; color:var(--btg-text);">
-                                {{ $product->name }}
-                            </div>
-                            <div style="font-size:11px; color:var(--btg-muted);">
-                                {{ $product->category->name ?? '—' }}
-                            </div>
-                        </div>
-                        <span class="badge-stock {{ $product->stock === 0 ? 'empty' : 'low' }}">
-                            {{ $product->stock === 0 ? 'Habis' : $product->stock . ' sisa' }}
-                        </span>
-                    </div>
-                @empty
-                    <div style="text-align:center; padding:24px 0; color:var(--btg-muted); font-size:13px;">
-                        <i class="fas fa-check-circle"
-                            style="color:#27ae60; font-size:22px; display:block; margin-bottom:8px;"></i>
-                        Semua stok dalam kondisi baik!
-                    </div>
-                @endforelse
-            </div>
-        </div>
 
         {{-- Aktivitas terbaru --}}
         <div class="panel">

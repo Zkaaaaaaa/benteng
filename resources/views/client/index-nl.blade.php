@@ -116,187 +116,49 @@
                 </div>
             </div>
 
-            {{-- Steps Grid --}}
+            @php
+                $menuCategories = ($categories ?? collect())->filter(fn ($category) => $category->products->isNotEmpty())->values();
+            @endphp
+
+            {{-- Dynamic Category Grid --}}
             <div class="rames__steps">
-
-                {{-- ── Stap 1: De Basis ── --}}
-                <div class="step">
-                    <div class="step__circle-wrap">
-                        <div class="step__circle">
-                            <svg class="step__arc" viewBox="0 0 120 120">
-                                <path id="arc1" d="M 15,60 A 45,45 0 1,1 105,60" fill="none" />
-                                <text font-size="11" font-weight="700" letter-spacing="3" fill="#e06c00"
-                                    text-anchor="middle">
-                                    <textPath href="#arc1" startOffset="50%">DE BASIS</textPath>
-                                </text>
-                            </svg>
-                            <span class="step__num">1</span>
+                @forelse($menuCategories as $index => $category)
+                    <div class="step {{ $loop->first ? 'step--wide' : '' }}">
+                        <div class="step__circle-wrap">
+                            <div class="step__circle">
+                                <span class="step__num">{{ $index + 1 }}</span>
+                            </div>
                         </div>
-                    </div>
 
-                    <ul class="step__list">
-                        <li class="step__item">
-                            <strong>NASI PUTIH</strong>
-                            <span>Witte rijst</span>
-                        </li>
-                        <li class="step__item">
-                            <strong>LONGTONG RAMES</strong>
-                            <span>Blokjes kleefrijst</span>
-                        </li>
-                        <li class="step__item">
-                            <strong>NASI KOENING</strong>
-                            <span>Gele rijst in kokos</span>
-                        </li>
-                        <li class="step__item">
-                            <strong>NASI GORENG</strong>
-                            <span>Gebakken rijst</span>
-                        </li>
-                        <li class="step__item">
-                            <strong>NASI DJAWA <span class="chili">🌶</span></strong>
-                            <span>Pittig gebakken rijst</span>
-                        </li>
-                        <li class="step__item">
-                            <strong>BAMI</strong>
-                            <span>Bami</span>
-                        </li>
-                    </ul>
-                </div>
-
-                {{-- ── Stap 2: Vlees of Vis ── --}}
-                <div class="step step--wide">
-                    <div class="step__circle-wrap">
-                        <div class="step__circle">
-                            <svg class="step__arc" viewBox="0 0 120 120">
-                                <path id="arc2" d="M 15,60 A 45,45 0 1,1 105,60" fill="none" />
-                                <text font-size="11" font-weight="700" letter-spacing="2" fill="#e06c00"
-                                    text-anchor="middle">
-                                    <textPath href="#arc2" startOffset="50%">VLEES OF VIS</textPath>
-                                </text>
-                            </svg>
-                            <span class="step__num">2</span>
-                        </div>
-                    </div>
-
-                    <div class="step__cols3">
-                        {{-- Kip --}}
                         <div class="step__col">
-                            <h4 class="step__col-head">KIP</h4>
+                            <h4 class="step__col-head">{{ strtoupper($category->name) }}</h4>
+                            @if($category->subtitle)
+                                <p class="sizebar__desc" style="margin-bottom: 12px;">{{ $category->subtitle }}</p>
+                            @endif
                             <ul class="step__list">
-                                <li class="step__item">
-                                    <strong>AYAM KLATENG</strong>
-                                    <span>Geroosterde kippedijen in een marinade van kokos, limoenblad en limoengras</span>
-                                </li>
-                                <li class="step__item">
-                                    <strong>AYAM CASHEW</strong>
-                                    <span>Krokant gebakken kipfilet gemarineerd in zoete saus</span>
-                                </li>
-                                <li class="step__item">
-                                    <strong>AYAM PANGGANG KETJAP</strong>
-                                    <span>Gegrilde kip gemarineerd in zoete pittige sojasaus</span>
-                                </li>
-                            </ul>
-                        </div>
-
-                        {{-- Vlees --}}
-                        <div class="step__col">
-                            <h4 class="step__col-head">VLEES</h4>
-                            <ul class="step__list">
-                                <li class="step__item">
-                                    <strong>DAGING SEMOOR</strong>
-                                    <span>Rundvlees gesmoord in zoete sojasaus</span>
-                                </li>
-                                <li class="step__item">
-                                    <strong>DAGING BLADO <span class="chili">🌶</span></strong>
-                                    <span>Pittig gekruid rundvlees</span>
-                                </li>
-                                <li class="step__item">
-                                    <strong>RENDANG PADANG</strong>
-                                    <span>Rundvlees gesmoord in kokos</span>
-                                </li>
-                                <li class="step__item">
-                                    <strong>SAMBAL GORENG KALKUN PETEH</strong>
-                                    <span>Pittig gekruid kalkoenfilet met petehbonen</span>
-                                </li>
-                                <li class="step__item">
-                                    <strong>BABI KETJAP</strong>
-                                    <span>Varkensvlees gesmoord in zoete sojasaus</span>
-                                </li>
-                            </ul>
-                        </div>
-
-                        {{-- Vis --}}
-                        <div class="step__col">
-                            <h4 class="step__col-head">VIS</h4>
-                            <ul class="step__list">
-                                <li class="step__item">
-                                    <strong>SAMBAL GORENG OEDANG <span class="chili">🌶</span> <span class="price-tag">+
-                                            2,50,-</span></strong>
-                                    <span>Garnalen met petehbonen</span>
-                                </li>
-                                <li class="step__item">
-                                    <strong>IKAN BALI <span class="chili">🌶</span> <span class="price-tag">+
-                                            2,50,-</span></strong>
-                                    <span>Gebakken makreel met pikante marinade</span>
-                                </li>
+                                @foreach($category->products as $product)
+                                    <li class="step__item">
+                                        <strong>
+                                            {{ strtoupper($product->name) }}
+                                            @if($product->is_spicy)
+                                                <span class="chili">🌶</span>
+                                            @endif
+                                        </strong>
+                                        @php
+                                            $description = $product->description_nl ?: ($product->description_en ?: $product->description);
+                                        @endphp
+                                        @if($description)
+                                            <span>{{ $description }}</span>
+                                        @endif
+                                    </li>
+                                @endforeach
                             </ul>
                         </div>
                     </div>
-                </div>
-
-                {{-- ── Stap 3: De Groenten ── --}}
-                <div class="step">
-                    <div class="step__circle-wrap">
-                        <div class="step__circle">
-                            <svg class="step__arc" viewBox="0 0 120 120">
-                                <path id="arc3" d="M 15,60 A 45,45 0 1,1 105,60" fill="none" />
-                                <text font-size="11" font-weight="700" letter-spacing="2" fill="#e06c00"
-                                    text-anchor="middle">
-                                    <textPath href="#arc3" startOffset="50%">DE GROENTEN</textPath>
-                                </text>
-                            </svg>
-                            <span class="step__num">3</span>
-                        </div>
-                    </div>
-
-                    <ul class="step__list">
-                        <li class="step__item">
-                            <strong>SAMBAL GORENG BOONTJES</strong>
-                            <span>Pittig gekruide boontjes met tahoe en petehbonen</span>
-                        </li>
-                        <li class="step__item">
-                            <strong>SAMBAL GORENG BOONTJES PEDIS <span class="chili">🌶</span></strong>
-                            <span>Pittig gekruide boontjes met tahoe en petehbonen</span>
-                        </li>
-                        <li class="step__item">
-                            <strong>KATJANG PANJANG TEMPÉ</strong>
-                            <span>Roergebakken kousenband met tempe en tomaat</span>
-                        </li>
-                        <li class="step__item">
-                            <strong>ORAK AREK</strong>
-                            <span>Roergebakken groenten met gepocheerd ei</span>
-                        </li>
-                        <li class="step__item">
-                            <strong>SAJOER LODEH</strong>
-                            <span>Gestoomde groenten in kokossaus</span>
-                        </li>
-                        <li class="step__item">
-                            <strong>TERONG BLADO <span class="chili">🌶</span> <span class="price-tag">+
-                                    1,-</span></strong>
-                            <span>Pittige aubergine met lombok</span>
-                        </li>
-                        <li class="step__item">
-                            <strong>ATJAR KETIMOEN</strong>
-                            <span>Komkommer in zoetzure saus</span>
-                        </li>
-                    </ul>
-                </div>
-
+                @empty
+                    <p class="rames__extra">Menu wordt binnenkort bijgewerkt.</p>
+                @endforelse
             </div>{{-- /.rames__steps --}}
-
-            <p class="rames__extra">
-                <strong>Speciaal (extra optie):</strong>
-                2 stokjes Saté Ayam (kipsaté) +3,- of 2 stokjes Saté Babi (Varkenssaté) +3,-
-            </p>
 
         </div>
     </section>

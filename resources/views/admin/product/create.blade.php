@@ -40,31 +40,30 @@
                             </select>
                         </div>
 
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px;">
-                            <div>
-                                <label class="btg-label" for="add-price">
-                                    Harga (€) <span>*</span>
-                                </label>
-                                <input type="number" class="btg-input" id="add-price" name="price" step="0.01"
-                                    min="0" required placeholder="12.50" value="{{ old('price') }}">
-                            </div>
-                            <div>
-                                <label class="btg-label" for="add-stock">
-                                    Stok <span>*</span>
-                                </label>
-                                <input type="number" class="btg-input" id="add-stock" name="stock" min="0"
-                                    required placeholder="50" value="{{ old('stock', 0) }}">
-                            </div>
+                        <div style="margin-bottom: 16px;">
+                            <label class="btg-label" for="add-price">
+                                Harga (€) <span>*</span>
+                            </label>
+                            <input type="number" class="btg-input" id="add-price" name="price" step="0.01"
+                                min="0" required placeholder="12.50" value="{{ old('price') }}">
                         </div>
                     </div>
 
                     <div>
                         <div style="margin-bottom: 16px;">
-                            <label class="btg-label" for="add-description">
-                                Deskripsi
+                            <label class="btg-label" for="add-description_en">
+                                Description (EN)
                             </label>
-                            <textarea class="btg-input" id="add-description" name="description" rows="4"
-                                placeholder="Jelaskan isi produk, bahan-bahan, atau info lainnya..." style="resize: vertical; min-height: 104px;">{{ old('description') }}</textarea>
+                            <textarea class="btg-input" id="add-description_en" name="description_en" rows="3"
+                                placeholder="Describe ingredients or notes in English..." style="resize: vertical; min-height: 80px;">{{ old('description_en') }}</textarea>
+                        </div>
+
+                        <div style="margin-bottom: 16px;">
+                            <label class="btg-label" for="add-description_nl">
+                                Beschrijving (NL)
+                            </label>
+                            <textarea class="btg-input" id="add-description_nl" name="description_nl" rows="3"
+                                placeholder="Beschrijf ingrediënten of notities in het Nederlands..." style="resize: vertical; min-height: 80px;">{{ old('description_nl') }}</textarea>
                         </div>
 
                         <div style="margin-bottom: 16px;">
