@@ -1,0 +1,45 @@
+<?php
+
+use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\SiteSettingController;
+use App\Http\Controllers\Admin\SiteSettingNLController;
+use App\Http\Controllers\Client\HomeController;
+use App\Http\Controllers\ProfileController;
+use Illuminate\Support\Facades\Route;
+
+// ── Client Routes ──────────────────────────────────────
+Route::get('/', [HomeController::class, 'indexNL'])->name('client.index-nl');
+Route::get('/en', [HomeController::class, 'index'])->name('client.index');
+Route::get('/contact', [HomeController::class, 'contact'])->name('client.contact');
+
+// ── Redirect Breeze dashboard → Admin ──────────────────
+Route::get('/dashboard', function () {
+    return redirect()->route('admin.dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
+
+// ── Admin Routes ───────────────────────────────────────
+Route::middleware(['auth', 'verified'])
+    ->prefix('admin')
+    ->name('admin.')        // <-- ini sudah otomatis prefix semua nama route
+    ->group(function () {
+
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+        // Jangan pakai ->names() lagi, sudah ditangani ->name('admin.') di atas
+        Route::resource('categories', CategoryController::class)->except(['show']);
+        Route::resource('products', ProductController::class)->except(['show']);
+        Route::resource('site-settings', SiteSettingController::class)->only(['edit', 'update']);
+        Route::resource('site-settings-nl', SiteSettingNLController::class)->only(['edit', 'update']);
+    });
+
+// ── Profile Routes ─────────────────────────────────────
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+require __DIR__.'/auth.php';
+
