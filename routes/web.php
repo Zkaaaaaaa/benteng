@@ -30,8 +30,10 @@ Route::middleware(['auth', 'verified'])
         // Jangan pakai ->names() lagi, sudah ditangani ->name('admin.') di atas
         Route::resource('categories', CategoryController::class)->except(['show']);
         Route::resource('products', ProductController::class)->except(['show']);
-        Route::resource('site-settings', SiteSettingController::class)->only(['edit', 'update']);
-        Route::resource('site-settings-nl', SiteSettingNLController::class)->only(['edit', 'update']);
+        Route::get('site-settings/edit', [SiteSettingController::class, 'edit'])->name('site-settings.edit');
+        Route::put('site-settings', [SiteSettingController::class, 'update'])->name('site-settings.update');
+        Route::get('site-settings-nl/edit', [SiteSettingNLController::class, 'edit'])->name('site-settings-nl.edit');
+        Route::put('site-settings-nl', [SiteSettingNLController::class, 'update'])->name('site-settings-nl.update');
     });
 
 // ── Profile Routes ─────────────────────────────────────
@@ -42,4 +44,3 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
-

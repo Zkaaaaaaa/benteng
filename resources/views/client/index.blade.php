@@ -1,32 +1,427 @@
 @extends('layouts.client.app')
 
 @section('content')
+    {{-- ═══════════════════════════════════════
+     HERO SECTION
+════════════════════════════════════════ --}}
+    <section class="hero">
+        <div class="hero__content">
+            <h1 class="hero__title">
+                {{ $site->desc1 }}
+            </h1>
+            <div class="hero__actions">
+                <a href="#" class="btn btn--outline">Our Locations</a>
+                <a href="#" class="btn btn--outline">View Menu</a>
+            </div>
+        </div>
+        <div class="hero__visual">
+            <img src="{{ asset($site->img1) }}" alt="Indonesisch eten" class="hero__image">
+            <div class="hero__overlay"></div>
+        </div>
+    </section>
 
-    {{-- ===== FIXED MOBILE ORDER BUTTON ===== --}}
-    @include('client.partials.mobile-order-button')
+    {{-- ═══════════════════════════════════════
+     ABOUT / VERHAAL SECTION
+════════════════════════════════════════ --}}
+    <section class="about">
+        <div class="about__container">
+            <div class="about__image-wrap">
+                <img src="{{ asset($site->img2) }}" alt="Benteng winkel" class="about__image">
+            </div>
+            <div class="about__content">
+                <h2 class="section-title">{{ $site->title2 }}</h2>
+                <p class="about__text">
+                    {{ $site->desc2 }}
+                </p>
+            </div>
+        </div>
+    </section>
 
-    {{-- ===== SIDE MENU OVERLAY ===== --}}
-    @include('client.partials.side-menu')
+    {{-- ═══════════════════════════════════════
+     LOCATIES SECTION
+════════════════════════════════════════ --}}
+    <section class="locations">
+        <div class="locations__container">
+            <h2 class="section-title section-title--center">Our Locations</h2>
 
-    {{-- ===== PAGE LOADER ===== --}}
-    @include('client.partials.loader')
+            <div class="locations__grid">
+                <div class="locations__cards">
 
-    {{-- ===== MODAL: OPENINGSTIJDEN ===== --}}
-    @include('client.partials.modal-openingstijden')
+                    {{-- Locatie 1 --}}
+                    <div class="location-card">
+                        <div>
+                            <img src="{{ asset($site->img_store1) }}" alt="Benteng">
+                        </div>
+                        <div class="location-card__info">
+                            <h3 class="location-card__name">{{ $site->store_name1 }}</h3>
+                            <p>{{ $site->address1 }}</p>
+                            <p>{{ $site->phone1 }}</p>
+                            <div class="orderbutton">
+                                <a href="{{ $site->store_link1 }}" target="_blank" class="btn btn--primary">Order
+                                    Online</a>
+                            </div>
+                        </div>
+                    </div>
 
-    {{-- ===== HERO SECTION ===== --}}
-    @include('client.sections.hero')
+                    {{-- Locatie 2 --}}
+                    <div class="location-card">
+                        <div>
+                            <img src="{{ asset($site->img_store2) }}" alt="Benteng">
+                        </div>
+                        <div class="location-card__info">
+                            <h3 class="location-card__name">{{ $site->store_name2 }}</h3>
+                            <p>{{ $site->address2 }}</p>
+                            <p>{{ $site->phone2 }}</p>
+                            <div class="orderbutton">
+                                <a href="{{ $site->store_link2 }}" target="_blank" class="btn btn--primary">Order
+                                    Online</a>
+                            </div>
+                        </div>
+                    </div>
 
-    {{-- ===== ABOUT / VERHAAL SECTION ===== --}}
-    @include('client.sections.about')
+                </div>
 
-    {{-- ===== RAMES MENU SECTION ===== --}}
-    @include('client.sections.rames-menu')
+                <div class="locations__map" id="client-locations-map" style="min-height: 450px; height: 100%; z-index: 1;">
+                </div>
+            </div>
+        </div>
+    </section>
 
-    {{-- ===== RIJSTTAFEL SECTION ===== --}}
-    @include('client.sections.rijsttafel')
+    {{-- ═══════════════════════════════════════
+     RAMES SECTION
+════════════════════════════════════════ --}}
+    <section class="rames">
+        <div class="rames__container">
 
-    {{-- ===== DISCOVER MORE SECTION ===== --}}
-    @include('client.sections.more', ['categories' => $categories ?? collect()])
+            {{-- Header --}}
+            <div class="rames__header">
+                <h2 class="rames__title">Our Rames</h2>
+                <p class="rames__subtitle">Just the Way You Like It</p>
+            </div>
 
+            {{-- Size Picker Bar --}}
+            <div class="rames__sizebar">
+                <div class="sizebar__item sizebar__item--left">
+                    <p class="sizebar__price"><span>13.75</span> <strong>KLEIN</strong></p>
+                    <p class="sizebar__desc">1x vlees of vis, 1x groente &amp; sambal goreng ei</p>
+                </div>
+                <div class="sizebar__middle">
+                    <p class="sizebar__hint">Kies eerst jouw grootte en kies daarna<br>in 3 simpele stappen de rest van jouw
+                        rames.</p>
+                </div>
+                <div class="sizebar__item sizebar__item--right">
+                    <p class="sizebar__price sizebar__price--groot"><strong>GROOT</strong> <span class="sizebar__plus">+
+                            3,-</span></p>
+                    <p class="sizebar__desc">2x vlees of vis, 2x groente, Tahoe of Tempe &amp; sambal goreng ei</p>
+                </div>
+            </div>
+
+            {{-- Steps Grid --}}
+            <div class="rames__steps">
+
+                {{-- ── Stap 1: De Basis ── --}}
+                <div class="step">
+                    <div class="step__circle-wrap">
+                        <div class="step__circle">
+                            <svg class="step__arc" viewBox="0 0 120 120">
+                                <path id="arc1" d="M 15,60 A 45,45 0 1,1 105,60" fill="none" />
+                                <text font-size="11" font-weight="700" letter-spacing="3" fill="#e06c00"
+                                    text-anchor="middle">
+                                    <textPath href="#arc1" startOffset="50%">DE BASIS</textPath>
+                                </text>
+                            </svg>
+                            <span class="step__num">1</span>
+                        </div>
+                    </div>
+
+                    <ul class="step__list">
+                        <li class="step__item">
+                            <strong>NASI PUTIH</strong>
+                            <span>Witte rijst</span>
+                        </li>
+                        <li class="step__item">
+                            <strong>LONGTONG RAMES</strong>
+                            <span>Blokjes kleefrijst</span>
+                        </li>
+                        <li class="step__item">
+                            <strong>NASI KOENING</strong>
+                            <span>Gele rijst in kokos</span>
+                        </li>
+                        <li class="step__item">
+                            <strong>NASI GORENG</strong>
+                            <span>Gebakken rijst</span>
+                        </li>
+                        <li class="step__item">
+                            <strong>NASI DJAWA <span class="chili">🌶</span></strong>
+                            <span>Pittig gebakken rijst</span>
+                        </li>
+                        <li class="step__item">
+                            <strong>BAMI</strong>
+                            <span>Bami</span>
+                        </li>
+                    </ul>
+                </div>
+
+                {{-- ── Stap 2: Vlees of Vis ── --}}
+                <div class="step step--wide">
+                    <div class="step__circle-wrap">
+                        <div class="step__circle">
+                            <svg class="step__arc" viewBox="0 0 120 120">
+                                <path id="arc2" d="M 15,60 A 45,45 0 1,1 105,60" fill="none" />
+                                <text font-size="11" font-weight="700" letter-spacing="2" fill="#e06c00"
+                                    text-anchor="middle">
+                                    <textPath href="#arc2" startOffset="50%">VLEES OF VIS</textPath>
+                                </text>
+                            </svg>
+                            <span class="step__num">2</span>
+                        </div>
+                    </div>
+
+                    <div class="step__cols3">
+                        {{-- Kip --}}
+                        <div class="step__col">
+                            <h4 class="step__col-head">KIP</h4>
+                            <ul class="step__list">
+                                <li class="step__item">
+                                    <strong>AYAM KLATENG</strong>
+                                    <span>Geroosterde kippedijen in een marinade van kokos, limoenblad en limoengras</span>
+                                </li>
+                                <li class="step__item">
+                                    <strong>AYAM CASHEW</strong>
+                                    <span>Krokant gebakken kipfilet gemarineerd in zoete saus</span>
+                                </li>
+                                <li class="step__item">
+                                    <strong>AYAM PANGGANG KETJAP</strong>
+                                    <span>Gegrilde kip gemarineerd in zoete pittige sojasaus</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        {{-- Vlees --}}
+                        <div class="step__col">
+                            <h4 class="step__col-head">VLEES</h4>
+                            <ul class="step__list">
+                                <li class="step__item">
+                                    <strong>DAGING SEMOOR</strong>
+                                    <span>Rundvlees gesmoord in zoete sojasaus</span>
+                                </li>
+                                <li class="step__item">
+                                    <strong>DAGING BLADO <span class="chili">🌶</span></strong>
+                                    <span>Pittig gekruid rundvlees</span>
+                                </li>
+                                <li class="step__item">
+                                    <strong>RENDANG PADANG</strong>
+                                    <span>Rundvlees gesmoord in kokos</span>
+                                </li>
+                                <li class="step__item">
+                                    <strong>SAMBAL GORENG KALKUN PETEH</strong>
+                                    <span>Pittig gekruid kalkoenfilet met petehbonen</span>
+                                </li>
+                                <li class="step__item">
+                                    <strong>BABI KETJAP</strong>
+                                    <span>Varkensvlees gesmoord in zoete sojasaus</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        {{-- Vis --}}
+                        <div class="step__col">
+                            <h4 class="step__col-head">VIS</h4>
+                            <ul class="step__list">
+                                <li class="step__item">
+                                    <strong>SAMBAL GORENG OEDANG <span class="chili">🌶</span> <span class="price-tag">+
+                                            2,50,-</span></strong>
+                                    <span>Garnalen met petehbonen</span>
+                                </li>
+                                <li class="step__item">
+                                    <strong>IKAN BALI <span class="chili">🌶</span> <span class="price-tag">+
+                                            2,50,-</span></strong>
+                                    <span>Gebakken makreel met pikante marinade</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- ── Stap 3: De Groenten ── --}}
+                <div class="step">
+                    <div class="step__circle-wrap">
+                        <div class="step__circle">
+                            <svg class="step__arc" viewBox="0 0 120 120">
+                                <path id="arc3" d="M 15,60 A 45,45 0 1,1 105,60" fill="none" />
+                                <text font-size="11" font-weight="700" letter-spacing="2" fill="#e06c00"
+                                    text-anchor="middle">
+                                    <textPath href="#arc3" startOffset="50%">DE GROENTEN</textPath>
+                                </text>
+                            </svg>
+                            <span class="step__num">3</span>
+                        </div>
+                    </div>
+
+                    <ul class="step__list">
+                        <li class="step__item">
+                            <strong>SAMBAL GORENG BOONTJES</strong>
+                            <span>Pittig gekruide boontjes met tahoe en petehbonen</span>
+                        </li>
+                        <li class="step__item">
+                            <strong>SAMBAL GORENG BOONTJES PEDIS <span class="chili">🌶</span></strong>
+                            <span>Pittig gekruide boontjes met tahoe en petehbonen</span>
+                        </li>
+                        <li class="step__item">
+                            <strong>KATJANG PANJANG TEMPÉ</strong>
+                            <span>Roergebakken kousenband met tempe en tomaat</span>
+                        </li>
+                        <li class="step__item">
+                            <strong>ORAK AREK</strong>
+                            <span>Roergebakken groenten met gepocheerd ei</span>
+                        </li>
+                        <li class="step__item">
+                            <strong>SAJOER LODEH</strong>
+                            <span>Gestoomde groenten in kokossaus</span>
+                        </li>
+                        <li class="step__item">
+                            <strong>TERONG BLADO <span class="chili">🌶</span> <span class="price-tag">+
+                                    1,-</span></strong>
+                            <span>Pittige aubergine met lombok</span>
+                        </li>
+                        <li class="step__item">
+                            <strong>ATJAR KETIMOEN</strong>
+                            <span>Komkommer in zoetzure saus</span>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>{{-- /.rames__steps --}}
+
+            <p class="rames__extra">
+                <strong>Speciaal (extra optie):</strong>
+                2 stokjes Saté Ayam (kipsaté) +3,- of 2 stokjes Saté Babi (Varkenssaté) +3,-
+            </p>
+
+        </div>
+    </section>
+
+    {{-- FOOTER --}}
+    <footer class="footer">
+        <div class="footer__container">
+
+            <div class="footer__brand">
+                <img src="{{ asset($site->logo) }}" alt="Benteng" class="footer__logo">
+                <p class="footer__tagline">Indonesische Delicatessen</p>
+            </div>
+
+            <div class="footer__block">
+                <h4 class="footer__title">Address</h4>
+                <div class="footer__location">
+                    <p class="footer__location-name">{{ $site->store_name1 }}</p>
+                    <p>{{ $site->address1 }}</p>
+                    <p>{{ $site->phone1 }}</p>
+                </div>
+                <div class="footer__location">
+                    <p class="footer__location-name">{{ $site->store_name2 }}</p>
+                    <p>{{ $site->address2 }}</p>
+                    <p>{{ $site->phone2 }}</p>
+                </div>
+            </div>
+
+            <div class="footer__block">
+                <h4 class="footer__title">{{ $site->title }}</h4>
+                <p class="footer__hours">{{ $site->opening_hour }}</p>
+            </div>
+
+            <div class="footer__block">
+                <h4 class="footer__title">Contact</h4>
+                <p class="footer__email">{{ $site->email }}</p>
+                <p class="footer__phone">{{ $site->phone }}</p>
+            </div>
+
+        </div>
+
+        <div class="footer__bottom">
+            <p>&copy; {{ date('Y') }} Benteng Indonesische Delicatessen. All rights reserved.</p>
+        </div>
+    </footer>
 @endsection
+
+@push('styles')
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <style>
+        .leaflet-popup-content-wrapper {
+            background: #000;
+            color: #fff;
+            font-family: 'Raleway', sans-serif;
+            border-radius: 12px;
+            padding: 6px;
+        }
+
+        .leaflet-popup-content b {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.5rem;
+            letter-spacing: 0.5px;
+            color: #fff;
+        }
+
+        .leaflet-popup-tip {
+            background: #000;
+        }
+
+        .leaflet-popup-content p {
+            margin: 4px 0 0;
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.85);
+            font-weight: 500;
+        }
+    </style>
+@endpush
+
+@push('scripts')
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var store1 = {
+                name: @json($site->store_name1 ?? 'Store 1'),
+                address: @json($site->address1 ?? ''),
+                lat: parseFloat(@json($site->lat_coordinate1)),
+                lng: parseFloat(@json($site->lon_coordinate1))
+            };
+
+            var store2 = {
+                name: @json($site->store_name2 ?? 'Store 2'),
+                address: @json($site->address2 ?? ''),
+                lat: parseFloat(@json($site->lat_coordinate2)),
+                lng: parseFloat(@json($site->lon_coordinate2))
+            };
+
+            var map = L.map('client-locations-map');
+
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+                subdomains: 'abcd',
+                maxZoom: 20
+            }).addTo(map);
+
+            var markers = [];
+
+            if (!isNaN(store1.lat) && !isNaN(store1.lng)) {
+                var marker1 = L.marker([store1.lat, store1.lng]).addTo(map)
+                    .bindPopup('<b>' + store1.name + '</b><p>' + store1.address + '</p>');
+                markers.push(marker1);
+            }
+
+            if (!isNaN(store2.lat) && !isNaN(store2.lng)) {
+                var marker2 = L.marker([store2.lat, store2.lng]).addTo(map)
+                    .bindPopup('<b>' + store2.name + '</b><p>' + store2.address + '</p>');
+                markers.push(marker2);
+            }
+
+            if (markers.length > 0) {
+                var group = new L.featureGroup(markers);
+                map.fitBounds(group.getBounds().pad(0.15));
+            } else {
+                map.setView([52.3676, 4.9041], 12);
+            }
+        });
+    </script>
+@endpush

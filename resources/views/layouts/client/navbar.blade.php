@@ -1,7 +1,7 @@
 <nav class="navbar">
     <div class="navbar__container">
         <a href="#" class="navbar__logo">
-            <img src="{{ asset($site->logo ?? 'assets/img/logo.svg') }}" alt="Benteng Indonesische Delicatessen">
+            <img src="{{ asset($site->logo) }}" alt="Benteng Indonesische Delicatessen">
         </a>
 
         <button class="navbar__toggle" id="navToggle" aria-label="Menu">

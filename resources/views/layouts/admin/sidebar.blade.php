@@ -47,13 +47,13 @@
             Produk
         </a>
 
-        <a href="{{ route('admin.site-settings.edit', '1') }}"
+        <a href="{{ route('admin.site-settings.edit') }}"
             class="btg-nav-link {{ request()->routeIs('admin.site-settings.*') ? 'active' : '' }}">
             <i class="fas fa-cog"></i>
             Pengaturan Website
         </a>
 
-        <a href="{{ route('admin.site-settings-nl.edit', '1') }}"
+        <a href="{{ route('admin.site-settings-nl.edit') }}"
             class="btg-nav-link {{ request()->routeIs('admin.site-settings-nl.*') ? 'active' : '' }}">
             <i class="fas fa-cog"></i>
             Pengaturan Website NL

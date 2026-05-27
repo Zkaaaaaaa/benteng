@@ -11,13 +11,15 @@ class SiteSettingNLController extends Controller
 {
     public function edit()
     {
-        $siteSetting = SiteSettingNL::first();
+        $siteSetting = SiteSettingNL::firstOrFail();
 
         return view('admin.site-setting-nl.edit', compact('siteSetting'));
     }
 
-    public function update(Request $request, SiteSettingNL $siteSetting)
+    public function update(Request $request)
     {
+        $siteSetting = SiteSettingNL::firstOrFail();
+
         $validated = $request->validate([
             'title1' => 'required|string|max:255',
             'desc1' => 'required|string',
@@ -41,7 +43,6 @@ class SiteSettingNLController extends Controller
             'title' => 'required|string|max:255',
             'opening_hour' => 'nullable|string|max:255',
 
-            // File uploads
             'logo' => 'nullable|image|mimes:jpeg,png,jpg,webp,svg|max:2048',
             'img1' => 'nullable|image|mimes:jpeg,png,jpg,webp,svg|max:2048',
             'img2' => 'nullable|image|mimes:jpeg,png,jpg,webp,svg|max:2048',
@@ -52,19 +53,16 @@ class SiteSettingNLController extends Controller
         $imageFields = ['logo', 'img1', 'img2', 'img_store1', 'img_store2'];
         foreach ($imageFields as $field) {
             if ($request->hasFile($field)) {
-                // Delete old file from storage if it exists and was uploaded (contains storage/)
-                if ($siteSetting->$field && strpos($siteSetting->$field, 'storage/') === 0) {
+                if ($siteSetting->$field && str_starts_with($siteSetting->$field, 'storage/')) {
                     $oldPath = str_replace('storage/', '', $siteSetting->$field);
                     if (Storage::disk('public')->exists($oldPath)) {
                         Storage::disk('public')->delete($oldPath);
                     }
                 }
 
-                // Store the new image
                 $path = $request->file($field)->store('settings', 'public');
                 $validated[$field] = 'storage/'.$path;
             } else {
-                // Maintain current value, do not overwrite with null
                 $validated[$field] = $siteSetting->$field;
             }
         }
@@ -72,7 +70,7 @@ class SiteSettingNLController extends Controller
         $siteSetting->update($validated);
 
         return redirect()
-            ->route('admin.site-settings-nl.edit', $siteSetting)
+            ->route('admin.site-settings-nl.edit')
             ->with('success', 'Pengaturan website berhasil diperbarui.');
     }
 }

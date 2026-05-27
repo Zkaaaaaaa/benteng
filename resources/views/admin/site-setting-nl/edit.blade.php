@@ -54,7 +54,7 @@
         </div>
 
         <div style="padding: 28px;">
-            <form method="POST" action="{{ route('admin.site-settings-nl.update', $siteSetting) }}"
+            <form method="POST" action="{{ route('admin.site-settings-nl.update') }}"
                 enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
