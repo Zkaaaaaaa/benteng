@@ -4,10 +4,10 @@ namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
-use App\Models\Product;
 use App\Models\RamesSetting;
 use App\Models\SiteSetting;
 use App\Models\SiteSettingNL;
+use App\Support\RamesMenu;
 use Illuminate\Support\Facades\Cache;
 
 class HomeController extends Controller
@@ -21,20 +21,12 @@ class HomeController extends Controller
                 ->get();
         });
 
-        $ramesProducts = Product::query()
-            ->with('category')
-            ->active()
-            ->rames()
-            ->ordered()
-            ->get()
-            ->groupBy('rames_group');
-
+        $ramesMenu = RamesMenu::forHomepage();
         $homeCategories = $categories->where('show_on_home', true);
         $ramesSetting = RamesSetting::query()->first(['*']);
-
         $site = SiteSettingNL::query()->first(['*']);
 
-        return view('client.index-nl', compact('categories', 'homeCategories', 'site', 'ramesProducts', 'ramesSetting'));
+        return view('client.index-nl', compact('categories', 'homeCategories', 'site', 'ramesMenu', 'ramesSetting'));
     }
 
     public function index()
@@ -46,20 +38,12 @@ class HomeController extends Controller
                 ->get();
         });
 
-        $ramesProducts = Product::query()
-            ->with('category')
-            ->active()
-            ->rames()
-            ->ordered()
-            ->get()
-            ->groupBy('rames_group');
-
+        $ramesMenu = RamesMenu::forHomepage();
         $homeCategories = $categories->where('show_on_home', true);
         $ramesSetting = RamesSetting::query()->first(['*']);
-
         $site = SiteSetting::query()->first(['*']);
 
-        return view('client.index', compact('categories', 'homeCategories', 'site', 'ramesProducts', 'ramesSetting'));
+        return view('client.index', compact('categories', 'homeCategories', 'site', 'ramesMenu', 'ramesSetting'));
     }
 
     public function contact()

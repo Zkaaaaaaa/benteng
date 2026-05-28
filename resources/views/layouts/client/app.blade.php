@@ -1,29 +1,28 @@
 <!DOCTYPE html>
-<html lang="nl">
+<html lang="{{ request()->routeIs('client.index') ? 'en' : 'nl' }}">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Benteng Indonesische Delicatessen</title>
+    <title>@yield('title', 'Benteng Indonesische Delicatessen')</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Raleway:wght@300;400;600;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
     @stack('styles')
 </head>
 
 <body>
 
-    {{-- NAVBAR --}}
     @include('layouts.client.navbar')
 
-    {{-- MAIN CONTENT --}}
     <main>
         @yield('content')
     </main>
 
+    <script src="{{ asset('assets/js/client.js') }}" defer></script>
     @stack('scripts')
 </body>
 

@@ -15,8 +15,8 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $this->call([
-            // MenuSeeder::class,
-            // RamesPrefillSeeder::class,
+            MenuSeeder::class,
+            RamesPrefillSeeder::class,
             SiteSettingsSeeder::class,
             SiteSettingsNLSeeder::class,
         ]);

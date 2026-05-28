@@ -3,124 +3,191 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Category;
 use App\Models\Product;
+use App\Models\RamesItem;
 use App\Models\RamesSetting;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\View\View;
 
 class RamesController extends Controller
 {
-    public function edit()
+    /** Key form admin → kolom database. */
+    private const SECTIONS = [
+        'basis' => [
+            'label' => 'DE BASIS — nasi, mie, dll.',
+            'section' => 'basis',
+            'subsection' => null,
+        ],
+        'kip' => [
+            'label' => 'KIP — produk ayam',
+            'section' => 'vlees_of_vis',
+            'subsection' => 'kip',
+        ],
+        'vlees' => [
+            'label' => 'VLEES — produk daging',
+            'section' => 'vlees_of_vis',
+            'subsection' => 'vlees',
+        ],
+        'vis' => [
+            'label' => 'VIS — produk ikan',
+            'section' => 'vlees_of_vis',
+            'subsection' => 'vis',
+        ],
+        'groenten' => [
+            'label' => 'DE GROENTEN — sayur, sambal goreng, dll.',
+            'section' => 'groenten',
+            'subsection' => null,
+        ],
+    ];
+
+    public function edit(): View
     {
-        $setting = RamesSetting::query()->firstOrCreate(
-            [],
-            [
-                'title_nl' => 'Onze Rames',
-                'title_en' => 'Our Rames',
-                'subtitle_nl' => 'Zoals Jij Het Wilt',
-                'subtitle_en' => 'Just the Way You Like It',
-                'small_title_nl' => 'KLEIN',
-                'small_title_en' => 'KLEIN',
-                'large_title_nl' => 'GROOT',
-                'large_title_en' => 'GROOT',
-                'small_desc' => '1x vlees of vis, 1x groente & sambal goreng ei',
-                'large_desc' => '2x vlees of vis, 2x groente, Tahoe of Tempe & sambal goreng ei',
-                'instruction_nl' => 'Kies eerst jouw grootte en kies daarna in 3 simpele stappen de rest van jouw rames.',
-                'instruction_en' => 'Choose your size first, then complete your rames in 3 simple steps.',
-            ]
-        );
-
-        $categories = Category::query()
-            ->with(['products' => fn ($q) => $q->active()->ordered()])
-            ->ordered()
-            ->get();
-
-        $selectedByGroup = [
-            'basis' => Product::query()->rames()->ramesGroup('basis')->pluck('id')->all(),
-            'kip' => Product::query()->rames()->ramesGroup('kip')->pluck('id')->all(),
-            'vlees' => Product::query()->rames()->ramesGroup('vlees')->pluck('id')->all(),
-            'vis' => Product::query()->rames()->ramesGroup('vis')->pluck('id')->all(),
-            'groenten' => Product::query()->rames()->ramesGroup('groenten')->pluck('id')->all(),
-        ];
-
-        $groupedOptions = [
-            'basis' => Product::query()->with('category')->active()->whereHas('category', fn ($q) => $q->whereIn('slug', ['rames-klein', 'rames-normaal']))->ordered()->get(),
-            'kip' => Product::query()->with('category')->active()->whereHas('category', fn ($q) => $q->where('slug', 'kip'))->ordered()->get(),
-            'vlees' => Product::query()->with('category')->active()->whereHas('category', fn ($q) => $q->where('slug', 'vlees'))->ordered()->get(),
-            'vis' => Product::query()->with('category')->active()->whereHas('category', fn ($q) => $q->where('slug', 'vis'))->ordered()->get(),
-            'groenten' => Product::query()->with('category')->active()->whereHas('category', fn ($q) => $q->where('slug', 'groente'))->ordered()->get(),
-        ];
-
-        return view('admin.rames.edit', compact('setting', 'categories', 'groupedOptions', 'selectedByGroup'));
-    }
-
-    public function update(Request $request)
-    {
-        $validated = $request->validate([
-            'title_nl' => 'required|string|max:255',
-            'title_en' => 'required|string|max:255',
-            'subtitle_nl' => 'required|string|max:255',
-            'subtitle_en' => 'required|string|max:255',
-            'small_title_nl' => 'required|string|max:255',
-            'small_title_en' => 'required|string|max:255',
-            'large_title_nl' => 'required|string|max:255',
-            'large_title_en' => 'required|string|max:255',
-            'small_price' => 'required|numeric|min:0',
-            'large_surcharge' => 'required|numeric|min:0',
-            'small_desc' => 'nullable|string|max:255',
-            'large_desc' => 'nullable|string|max:255',
-            'instruction_nl' => 'nullable|string|max:255',
-            'instruction_en' => 'nullable|string|max:255',
-            'button_label_nl' => 'nullable|string|max:255',
-            'button_label_en' => 'nullable|string|max:255',
-            'bottom_title_nl' => 'nullable|string|max:255',
-            'bottom_title_en' => 'nullable|string|max:255',
-            'bottom_text_nl' => 'nullable|string|max:2000',
-            'bottom_text_en' => 'nullable|string|max:2000',
-            'rames_basis_ids' => 'nullable|array',
-            'rames_basis_ids.*' => 'exists:products,id',
-            'rames_kip_ids' => 'nullable|array',
-            'rames_kip_ids.*' => 'exists:products,id',
-            'rames_vlees_ids' => 'nullable|array',
-            'rames_vlees_ids.*' => 'exists:products,id',
-            'rames_vis_ids' => 'nullable|array',
-            'rames_vis_ids.*' => 'exists:products,id',
-            'rames_groenten_ids' => 'nullable|array',
-            'rames_groenten_ids.*' => 'exists:products,id',
+        $setting = RamesSetting::query()->firstOrCreate([], [
+            'title_nl' => 'Onze Rames',
+            'title_en' => 'Our Rames',
+            'subtitle_nl' => 'Zoals Jij Het Wilt',
+            'subtitle_en' => 'Just the Way You Like It',
+            'small_title_nl' => 'KLEIN',
+            'small_title_en' => 'KLEIN',
+            'large_title_nl' => 'GROOT',
+            'large_title_en' => 'GROOT',
+            'small_price' => 13.75,
+            'large_surcharge' => 3.00,
+            'small_desc' => '1x vlees of vis, 1x groente & sambal goreng ei',
+            'large_desc' => '2x vlees of vis, 2x groente, Tahoe of Tempe & sambal goreng ei',
+            'instruction_nl' => 'Kies eerst jouw grootte en kies daarna in 3 simpele stappen de rest van jouw rames.',
+            'instruction_en' => 'Choose your size first, then complete your rames in 3 simple steps.',
+            'button_label_nl' => 'Bekijk Volledige Menu',
+            'button_label_en' => 'View Full Menu',
         ]);
 
-        DB::transaction(function () use ($validated) {
-            $setting = RamesSetting::query()->firstOrCreate([]);
-            $setting->update($validated);
+        $assignedIds = RamesItem::query()->pluck('product_id');
 
-            Product::query()->update([
-                'is_rames' => false,
-                'rames_group' => null,
-            ]);
+        $availableProducts = Product::query()
+            ->active()
+            ->ordered()
+            ->when($assignedIds->isNotEmpty(), fn ($q) => $q->whereNotIn('id', $assignedIds))
+            ->get(['id', 'name', 'description_nl', 'description_en', 'description']);
 
-            $groups = [
-                'basis' => $validated['rames_basis_ids'] ?? [],
-                'kip' => $validated['rames_kip_ids'] ?? [],
-                'vlees' => $validated['rames_vlees_ids'] ?? [],
-                'vis' => $validated['rames_vis_ids'] ?? [],
-                'groenten' => $validated['rames_groenten_ids'] ?? [],
-            ];
+        $sections = [];
+        foreach (self::SECTIONS as $key => $config) {
+            $itemsQuery = RamesItem::query()
+                ->with(['product' => fn ($q) => $q->active()->ordered()])
+                ->where('section', $config['section']);
 
-            foreach ($groups as $group => $ids) {
-                foreach ($ids as $productId) {
-                    Product::query()->whereKey($productId)->update([
-                        'is_rames' => true,
-                        'rames_group' => $group,
-                    ]);
-                }
+            if ($config['subsection']) {
+                $itemsQuery->where('subsection', $config['subsection']);
+            } else {
+                $itemsQuery->whereNull('subsection');
             }
-        });
 
+            $sections[$key] = [
+                'label' => $config['label'],
+                'items' => $itemsQuery->get(),
+            ];
+        }
+
+        return view('admin.rames.edit', compact('setting', 'sections', 'availableProducts'));
+    }
+
+    public function updateSettings(Request $request): RedirectResponse
+    {
+        $data = $request->validate([
+            'title_nl' => 'nullable|string|max:255',
+            'title_en' => 'nullable|string|max:255',
+            'subtitle_nl' => 'nullable|string|max:255',
+            'subtitle_en' => 'nullable|string|max:255',
+            'small_title_nl' => 'nullable|string|max:50',
+            'small_title_en' => 'nullable|string|max:50',
+            'large_title_nl' => 'nullable|string|max:50',
+            'large_title_en' => 'nullable|string|max:50',
+            'small_price' => 'nullable|numeric|min:0',
+            'large_surcharge' => 'nullable|numeric|min:0',
+            'small_desc' => 'nullable|string|max:500',
+            'large_desc' => 'nullable|string|max:500',
+            'instruction_nl' => 'nullable|string|max:500',
+            'instruction_en' => 'nullable|string|max:500',
+            'button_label_nl' => 'nullable|string|max:100',
+            'button_label_en' => 'nullable|string|max:100',
+            'bottom_title_nl' => 'nullable|string|max:255',
+            'bottom_title_en' => 'nullable|string|max:255',
+            'bottom_text_nl' => 'nullable|string|max:1000',
+            'bottom_text_en' => 'nullable|string|max:1000',
+        ]);
+
+        $setting = RamesSetting::query()->firstOrCreate([]);
+        $setting->update($data);
+
+        $this->clearMenuCache();
+
+        return redirect()
+            ->route('admin.rames.edit')
+            ->with('success', 'Teks bagian Rames berhasil disimpan.');
+    }
+
+    public function storeItem(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'section_key' => 'required|in:' . implode(',', array_keys(self::SECTIONS)),
+            'product_id' => 'required|integer|exists:products,id',
+        ]);
+
+        $config = self::SECTIONS[$request->input('section_key')];
+        $productId = (int) $request->input('product_id');
+
+        $product = Product::query()->active()->find($productId);
+        if (! $product) {
+            return back()->withErrors(['product_id' => 'Produk tidak aktif atau tidak ditemukan.']);
+        }
+
+        if (RamesItem::query()->where('product_id', $productId)->exists()) {
+            return back()->withErrors([
+                'product_id' => "{$product->name} sudah ada di menu Rames. Hapus dulu dari bagian lain jika ingin memindahkan.",
+            ]);
+        }
+
+        RamesItem::query()->create([
+            'product_id' => $productId,
+            'section' => $config['section'],
+            'subsection' => $config['subsection'],
+        ]);
+
+        $this->clearMenuCache();
+
+        return redirect()
+            ->route('admin.rames.edit')
+            ->with('success', "{$product->name} ditambahkan ke {$this->sectionLabel($request->input('section_key'))}.");
+    }
+
+    public function destroyItem(RamesItem $ramesItem): RedirectResponse
+    {
+        $name = $ramesItem->product?->name ?? 'Produk';
+        $ramesItem->delete();
+
+        $this->clearMenuCache();
+
+        return redirect()
+            ->route('admin.rames.edit')
+            ->with('success', "{$name} dihapus dari menu Rames.");
+    }
+
+    private function sectionLabel(string $key): string
+    {
+        return match ($key) {
+            'basis' => 'DE BASIS',
+            'kip' => 'KIP',
+            'vlees' => 'VLEES',
+            'vis' => 'VIS',
+            'groenten' => 'DE GROENTEN',
+            default => 'menu Rames',
+        };
+    }
+
+    private function clearMenuCache(): void
+    {
         Cache::forget('client.menu.categories.nl');
         Cache::forget('client.menu.categories.en');
-
-        return redirect()->route('admin.rames.edit')->with('success', 'Rames settings berhasil diperbarui.');
     }
 }

@@ -4,26 +4,26 @@
     {{-- ═══════════════════════════════════════
      HERO SECTION
 ════════════════════════════════════════ --}}
-    <section class="hero">
-        <div class="hero__content">
-            <h1 class="hero__title">
-                {{ $site->desc1 }}
-            </h1>
-            <div class="hero__actions">
-                <a href="#" class="btn btn--outline">Online Bestellen</a>
-                <a href="#" class="btn btn--outline">Bekijk Menukaart</a>
-            </div>
-        </div>
-        <div class="hero__visual">
+    <section class="hero" id="hero">
+        <div class="hero__bg">
             <img src="{{ asset($site->img1) }}" alt="Indonesisch eten" class="hero__image">
             <div class="hero__overlay"></div>
+        </div>
+        <div class="hero__inner">
+            <div class="hero__content">
+                <h1 class="hero__title">{{ $site->desc1 }}</h1>
+                <div class="hero__actions">
+                    <a href="#locations" class="btn btn--light">Onze Locaties</a>
+                    <a href="#rames" class="btn btn--light">Bekijk Menukaart</a>
+                </div>
+            </div>
         </div>
     </section>
 
     {{-- ═══════════════════════════════════════
      ABOUT / VERHAAL SECTION
 ════════════════════════════════════════ --}}
-    <section class="about">
+    <section class="about" id="about">
         <div class="about__container">
             <div class="about__image-wrap">
                 <img src="{{ asset($site->img2) }}" alt="Benteng winkel" class="about__image">
@@ -40,7 +40,7 @@
     {{-- ═══════════════════════════════════════
      LOCATIES SECTION
 ════════════════════════════════════════ --}}
-    <section class="locations">
+    <section class="locations" id="locations">
         <div class="locations__container">
             <h2 class="section-title section-title--center">Onze Locaties</h2>
 
@@ -81,7 +81,7 @@
 
                 </div>
 
-                <div class="locations__map" id="client-locations-map" style="min-height: 450px; height: 100%; z-index: 1;">
+                <div class="locations__map" id="client-locations-map">
                 </div>
             </div>
         </div>
@@ -90,7 +90,7 @@
     {{-- ═══════════════════════════════════════
      RAMES SECTION
 ════════════════════════════════════════ --}}
-    <section class="rames">
+    <section class="rames" id="rames">
         <div class="rames__container">
             <div class="rames__header">
                 <h2 class="rames__title">{{ $ramesSetting->title_nl ?? 'Onze Rames' }}</h2>
@@ -112,11 +112,11 @@
             </div>
 
             @php
-                $basisItems = $ramesProducts->get('basis', collect());
-                $kipItems = $ramesProducts->get('kip', collect());
-                $vleesItems = $ramesProducts->get('vlees', collect());
-                $visItems = $ramesProducts->get('vis', collect());
-                $groenteItems = $ramesProducts->get('groenten', collect());
+                $basisItems = $ramesMenu['basis'] ?? collect();
+                $kipItems = $ramesMenu['kip'] ?? collect();
+                $vleesItems = $ramesMenu['vlees'] ?? collect();
+                $visItems = $ramesMenu['vis'] ?? collect();
+                $groenteItems = $ramesMenu['groenten'] ?? collect();
             @endphp
 
             <div class="rames__steps">
@@ -247,37 +247,37 @@
     {{-- FOOTER --}}
     <footer class="footer">
         <div class="footer__container">
-
             <div class="footer__brand">
                 <img src="{{ asset($site->logo) }}" alt="Benteng" class="footer__logo">
-                <p class="footer__tagline">Indonesische Delicatessen</p>
             </div>
 
-            <div class="footer__block">
-                <h4 class="footer__title">Adres</h4>
-                <div class="footer__location">
-                    <p class="footer__location-name">{{ $site->store_name1 }}</p>
-                    <p>{{ $site->address1 }}</p>
-                    <p>{{ $site->phone1 }}</p>
+            <div class="footer__info">
+                <div class="footer__block footer__block--address">
+                    <h4 class="footer__title">Adres</h4>
+                    <div class="footer__location">
+                        <p class="footer__location-name">{{ $site->store_name1 }}</p>
+                        <p>{{ $site->address1 }}</p>
+                        <p>{{ $site->phone1 }}</p>
+                    </div>
+                    <div class="footer__location">
+                        <p class="footer__location-name">{{ $site->store_name2 }}</p>
+                        <p>{{ $site->address2 }}</p>
+                        <p>{{ $site->phone2 }}</p>
+                    </div>
                 </div>
-                <div class="footer__location">
-                    <p class="footer__location-name">{{ $site->store_name2 }}</p>
-                    <p>{{ $site->address2 }}</p>
-                    <p>{{ $site->phone2 }}</p>
+
+                <div class="footer__block footer__block--meta">
+                    <div class="footer__hours-wrap">
+                        <h4 class="footer__title">{{ $site->title }}</h4>
+                        <p class="footer__hours">{{ $site->opening_hour }}</p>
+                    </div>
+                    <div class="footer__contact-wrap">
+                        <h4 class="footer__title">Contact</h4>
+                        <p class="footer__email">{{ $site->email }}</p>
+                        <p class="footer__phone">{{ $site->phone }}</p>
+                    </div>
                 </div>
             </div>
-
-            <div class="footer__block">
-                <h4 class="footer__title">{{ $site->title }}</h4>
-                <p class="footer__hours">{{ $site->opening_hour }}</p>
-            </div>
-
-            <div class="footer__block">
-                <h4 class="footer__title">Contact</h4>
-                <p class="footer__email">{{ $site->email }}</p>
-                <p class="footer__phone">{{ $site->phone }}</p>
-            </div>
-
         </div>
 
         <div class="footer__bottom">
@@ -289,62 +289,6 @@
 @push('styles')
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
         integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
-    <style>
-        .full-menu-modal {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, .6);
-            z-index: 60;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-        .full-menu-modal.open { display: flex; }
-        .full-menu-dialog {
-            background: #fff;
-            width: min(980px, 100%);
-            max-height: 85vh;
-            overflow-y: auto;
-            border-radius: 16px;
-            padding: 24px;
-            position: relative;
-            animation: fadeIn .2s ease;
-        }
-        .full-menu-close {
-            position: absolute; right: 16px; top: 10px; border: none; background: none; font-size: 30px; cursor: pointer;
-        }
-        .full-menu-group { margin-top: 20px; border-top: 1px solid #eee; padding-top: 14px; }
-        .full-menu-group h4 { font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: #ca3f24; }
-        .full-menu-item { display: flex; justify-content: space-between; gap: 12px; margin: 8px 0; }
-        .full-menu-item p { font-size: 12px; color: #6b6b6b; margin: 2px 0 0; }
-        .full-menu-item span { white-space: nowrap; font-weight: 700; }
-        .leaflet-popup-content-wrapper {
-            background: #000;
-            color: #fff;
-            font-family: 'Raleway', sans-serif;
-            border-radius: 12px;
-            padding: 6px;
-        }
-
-        .leaflet-popup-content b {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 1.5rem;
-            letter-spacing: 0.5px;
-            color: #fff;
-        }
-
-        .leaflet-popup-tip {
-            background: #000;
-        }
-
-        .leaflet-popup-content p {
-            margin: 4px 0 0;
-            font-size: 0.95rem;
-            color: rgba(255, 255, 255, 0.85);
-            font-weight: 500;
-        }
-    </style>
 @endpush
 
 @push('scripts')

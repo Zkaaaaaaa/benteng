@@ -32,7 +32,9 @@ Route::middleware(['auth', 'verified'])
         Route::resource('categories', CategoryController::class)->except(['show']);
         Route::resource('products', ProductController::class)->except(['show']);
         Route::get('rames/edit', [RamesController::class, 'edit'])->name('rames.edit');
-        Route::put('rames', [RamesController::class, 'update'])->name('rames.update');
+        Route::put('rames/settings', [RamesController::class, 'updateSettings'])->name('rames.settings.update');
+        Route::post('rames/items', [RamesController::class, 'storeItem'])->name('rames.items.store');
+        Route::delete('rames/items/{ramesItem}', [RamesController::class, 'destroyItem'])->name('rames.items.destroy');
         Route::get('site-settings/edit', [SiteSettingController::class, 'edit'])->name('site-settings.edit');
         Route::put('site-settings', [SiteSettingController::class, 'update'])->name('site-settings.update');
         Route::get('site-settings-nl/edit', [SiteSettingNLController::class, 'edit'])->name('site-settings-nl.edit');

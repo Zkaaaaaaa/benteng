@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\RamesItem;
 use App\Models\RamesSetting;
 use Illuminate\Database\Seeder;
 
@@ -37,39 +38,32 @@ class RamesPrefillSeeder extends Seeder
             ]
         );
 
-        $sectionBySlug = [
-            'rames-klein' => 'basis',
-            'kip' => 'vlees',
-            'vlees' => 'vlees',
-            'vis' => 'vis',
-            'groente' => 'groenten',
+        // Mapping sekali dari slug kategori menu (data awal), bukan dipakai runtime.
+        $slugToRames = [
+            'rames-klein' => ['section' => 'basis', 'subsection' => null],
+            'kip' => ['section' => 'vlees_of_vis', 'subsection' => 'kip'],
+            'vlees' => ['section' => 'vlees_of_vis', 'subsection' => 'vlees'],
+            'vis' => ['section' => 'vlees_of_vis', 'subsection' => 'vis'],
+            'groente' => ['section' => 'groenten', 'subsection' => null],
         ];
 
-        Category::query()->update(['rames_section' => null]);
-        foreach ($sectionBySlug as $slug => $section) {
-            Category::query()->where('slug', $slug)->update(['rames_section' => $section]);
-        }
+        RamesItem::query()->delete();
 
-        Product::query()->update(['is_rames' => false, 'rames_group' => null]);
-
-        $ramesCategories = Category::query()->get(['id', 'slug']);
-        foreach ($ramesCategories as $category) {
-            if (array_key_exists($category->slug, $sectionBySlug)) {
-                $group = match ($category->slug) {
-                    'rames-klein' => 'basis',
-                    'kip' => 'kip',
-                    'vlees' => 'vlees',
-                    'vis' => 'vis',
-                    'groente' => 'groenten',
-                    default => null,
-                };
-                if ($group) {
-                    Product::query()->where('category_id', $category->id)->update([
-                        'is_rames' => true,
-                        'rames_group' => $group,
-                    ]);
-                }
+        foreach (Category::query()->whereIn('slug', array_keys($slugToRames))->get(['id', 'slug']) as $category) {
+            $map = $slugToRames[$category->slug] ?? null;
+            if (! $map) {
+                continue;
             }
+
+            Product::query()
+                ->where('category_id', $category->id)
+                ->each(function (Product $product) use ($map) {
+                    RamesItem::query()->create([
+                        'product_id' => $product->id,
+                        'section' => $map['section'],
+                        'subsection' => $map['subsection'],
+                    ]);
+                });
         }
     }
 }
