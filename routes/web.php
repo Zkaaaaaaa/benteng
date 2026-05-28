@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\RamesController;
 use App\Http\Controllers\Admin\SiteSettingController;
 use App\Http\Controllers\Admin\SiteSettingNLController;
 use App\Http\Controllers\Client\HomeController;
@@ -30,6 +31,8 @@ Route::middleware(['auth', 'verified'])
         // Jangan pakai ->names() lagi, sudah ditangani ->name('admin.') di atas
         Route::resource('categories', CategoryController::class)->except(['show']);
         Route::resource('products', ProductController::class)->except(['show']);
+        Route::get('rames/edit', [RamesController::class, 'edit'])->name('rames.edit');
+        Route::put('rames', [RamesController::class, 'update'])->name('rames.update');
         Route::get('site-settings/edit', [SiteSettingController::class, 'edit'])->name('site-settings.edit');
         Route::put('site-settings', [SiteSettingController::class, 'update'])->name('site-settings.update');
         Route::get('site-settings-nl/edit', [SiteSettingNLController::class, 'edit'])->name('site-settings-nl.edit');

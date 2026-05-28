@@ -47,6 +47,12 @@
             Produk
         </a>
 
+        <a href="{{ route('admin.rames.edit') }}"
+            class="btg-nav-link {{ request()->routeIs('admin.rames.*') ? 'active' : '' }}">
+            <i class="fas fa-stream"></i>
+            Manage Rames
+        </a>
+
         <a href="{{ route('admin.site-settings.edit') }}"
             class="btg-nav-link {{ request()->routeIs('admin.site-settings.*') ? 'active' : '' }}">
             <i class="fas fa-cog"></i>

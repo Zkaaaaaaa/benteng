@@ -92,76 +92,157 @@
 ════════════════════════════════════════ --}}
     <section class="rames">
         <div class="rames__container">
-
-            {{-- Header --}}
             <div class="rames__header">
-                <h2 class="rames__title">Onze Rames</h2>
-                <p class="rames__subtitle">Zoals Jij Het Wilt</p>
+                <h2 class="rames__title">{{ $ramesSetting->title_nl ?? 'Onze Rames' }}</h2>
+                <p class="rames__subtitle">{{ $ramesSetting->subtitle_nl ?? 'Zoals Jij Het Wilt' }}</p>
             </div>
 
-            {{-- Size Picker Bar --}}
             <div class="rames__sizebar">
                 <div class="sizebar__item sizebar__item--left">
-                    <p class="sizebar__price"><span>13.75</span> <strong>KLEIN</strong></p>
-                    <p class="sizebar__desc">1x vlees of vis, 1x groente &amp; sambal goreng ei</p>
+                    <p class="sizebar__price"><span>{{ number_format((float) ($ramesSetting->small_price ?? 13.75), 2) }}</span> <strong>{{ $ramesSetting->small_title_nl ?? 'KLEIN' }}</strong></p>
+                    <p class="sizebar__desc">{{ $ramesSetting->small_desc ?? '1x vlees of vis, 1x groente & sambal goreng ei' }}</p>
                 </div>
                 <div class="sizebar__middle">
-                    <p class="sizebar__hint">Kies eerst jouw grootte en kies daarna<br>in 3 simpele stappen de rest van jouw
-                        rames.</p>
+                    <p class="sizebar__hint">{{ $ramesSetting->instruction_nl ?? 'Kies eerst jouw grootte en kies daarna in 3 simpele stappen de rest van jouw rames.' }}</p>
                 </div>
                 <div class="sizebar__item sizebar__item--right">
-                    <p class="sizebar__price sizebar__price--groot"><strong>GROOT</strong> <span class="sizebar__plus">+
-                            3,-</span></p>
-                    <p class="sizebar__desc">2x vlees of vis, 2x groente, Tahoe of Tempe &amp; sambal goreng ei</p>
+                    <p class="sizebar__price sizebar__price--groot"><strong>{{ $ramesSetting->large_title_nl ?? 'GROOT' }}</strong> <span class="sizebar__plus">+ {{ number_format((float) ($ramesSetting->large_surcharge ?? 3), 2) }}</span></p>
+                    <p class="sizebar__desc">{{ $ramesSetting->large_desc ?? '2x vlees of vis, 2x groente, Tahoe of Tempe & sambal goreng ei' }}</p>
                 </div>
             </div>
 
             @php
-                $menuCategories = ($categories ?? collect())->filter(fn ($category) => $category->products->isNotEmpty())->values();
+                $basisItems = $ramesProducts->get('basis', collect());
+                $kipItems = $ramesProducts->get('kip', collect());
+                $vleesItems = $ramesProducts->get('vlees', collect());
+                $visItems = $ramesProducts->get('vis', collect());
+                $groenteItems = $ramesProducts->get('groenten', collect());
             @endphp
 
-            {{-- Dynamic Category Grid --}}
             <div class="rames__steps">
-                @forelse($menuCategories as $index => $category)
-                    <div class="step {{ $loop->first ? 'step--wide' : '' }}">
-                        <div class="step__circle-wrap">
-                            <div class="step__circle">
-                                <span class="step__num">{{ $index + 1 }}</span>
-                            </div>
-                        </div>
+                <div class="step">
+                    <div class="step__circle-wrap"><div class="step__circle"><span class="step__num">1</span></div></div>
+                    <div class="step__col">
+                        <h4 class="step__col-head">DE BASIS</h4>
+                        <ul class="step__list">
+                            @forelse($basisItems as $product)
+                                <li class="step__item">
+                                    <strong>{{ strtoupper($product->name) }} @if($product->is_spicy)<span class="chili">🌶</span>@endif</strong>
+                                    @php($description = $product->description_nl ?: ($product->description_en ?: $product->description))
+                                    @if($description)<span>{{ $description }}</span>@endif
+                                </li>
+                            @empty
+                                <li class="step__item"><span>Nog geen basis ingesteld.</span></li>
+                            @endforelse
+                        </ul>
+                    </div>
+                </div>
 
+                <div class="step step--wide">
+                    <div class="step__circle-wrap"><div class="step__circle"><span class="step__num">2</span></div></div>
+                    <div class="step__cols3">
                         <div class="step__col">
-                            <h4 class="step__col-head">{{ strtoupper($category->name) }}</h4>
-                            @if($category->subtitle)
-                                <p class="sizebar__desc" style="margin-bottom: 12px;">{{ $category->subtitle }}</p>
-                            @endif
+                            <h4 class="step__col-head">KIP</h4>
                             <ul class="step__list">
-                                @foreach($category->products as $product)
+                                @forelse($kipItems as $product)
                                     <li class="step__item">
-                                        <strong>
-                                            {{ strtoupper($product->name) }}
-                                            @if($product->is_spicy)
-                                                <span class="chili">🌶</span>
-                                            @endif
-                                        </strong>
-                                        @php
-                                            $description = $product->description_nl ?: ($product->description_en ?: $product->description);
-                                        @endphp
-                                        @if($description)
-                                            <span>{{ $description }}</span>
-                                        @endif
+                                        <strong>{{ strtoupper($product->name) }} @if($product->is_spicy)<span class="chili">🌶</span>@endif</strong>
+                                        @php($description = $product->description_nl ?: ($product->description_en ?: $product->description))
+                                        @if($description)<span>{{ $description }}</span>@endif
                                     </li>
-                                @endforeach
+                                @empty
+                                    <li class="step__item"><span>-</span></li>
+                                @endforelse
+                            </ul>
+                        </div>
+                        <div class="step__col">
+                            <h4 class="step__col-head">VLEES</h4>
+                            <ul class="step__list">
+                                @forelse($vleesItems as $product)
+                                    <li class="step__item">
+                                        <strong>{{ strtoupper($product->name) }} @if($product->is_spicy)<span class="chili">🌶</span>@endif</strong>
+                                        @php($description = $product->description_nl ?: ($product->description_en ?: $product->description))
+                                        @if($description)<span>{{ $description }}</span>@endif
+                                    </li>
+                                @empty
+                                    <li class="step__item"><span>-</span></li>
+                                @endforelse
+                            </ul>
+                        </div>
+                        <div class="step__col">
+                            <h4 class="step__col-head">VIS</h4>
+                            <ul class="step__list">
+                                @forelse($visItems as $product)
+                                    <li class="step__item">
+                                        <strong>{{ strtoupper($product->name) }} @if($product->is_spicy)<span class="chili">🌶</span>@endif</strong>
+                                        @php($description = $product->description_nl ?: ($product->description_en ?: $product->description))
+                                        @if($description)<span>{{ $description }}</span>@endif
+                                    </li>
+                                @empty
+                                    <li class="step__item"><span>-</span></li>
+                                @endforelse
                             </ul>
                         </div>
                     </div>
-                @empty
-                    <p class="rames__extra">Menu wordt binnenkort bijgewerkt.</p>
-                @endforelse
-            </div>{{-- /.rames__steps --}}
+                </div>
 
+                <div class="step">
+                    <div class="step__circle-wrap"><div class="step__circle"><span class="step__num">3</span></div></div>
+                    <div class="step__col">
+                        <h4 class="step__col-head">DE GROENTEN</h4>
+                        <ul class="step__list">
+                            @forelse($groenteItems as $product)
+                                <li class="step__item">
+                                    <strong>{{ strtoupper($product->name) }} @if($product->is_spicy)<span class="chili">🌶</span>@endif</strong>
+                                    @php($description = $product->description_nl ?: ($product->description_en ?: $product->description))
+                                    @if($description)<span>{{ $description }}</span>@endif
+                                </li>
+                            @empty
+                                <li class="step__item"><span>Nog geen groenten ingesteld.</span></li>
+                            @endforelse
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            @if(($ramesSetting->bottom_title_nl ?? null) || ($ramesSetting->bottom_text_nl ?? null))
+                <div class="text-center mt-8">
+                    @if($ramesSetting->bottom_title_nl)
+                        <p class="rames__extra"><strong>{{ $ramesSetting->bottom_title_nl }}</strong></p>
+                    @endif
+                    @if($ramesSetting->bottom_text_nl)
+                        <p class="sizebar__desc">{{ $ramesSetting->bottom_text_nl }}</p>
+                    @endif
+                </div>
+            @endif
+
+            <div class="text-center mt-8">
+                <button type="button" class="btn btn--outline" id="open-full-menu">{{ $ramesSetting->button_label_nl ?? 'Bekijk Volledige Menu' }}</button>
+            </div>
         </div>
     </section>
+
+    <div id="full-menu-modal" class="full-menu-modal">
+        <div class="full-menu-dialog">
+            <button type="button" class="full-menu-close" id="close-full-menu">×</button>
+            <h3 class="rames__title">Volledige Menu</h3>
+            @foreach(($categories ?? collect())->filter(fn ($c) => $c->products->isNotEmpty()) as $category)
+                <div class="full-menu-group">
+                    <h4>{{ $category->name }}</h4>
+                    @foreach($category->products as $product)
+                        <div class="full-menu-item">
+                            <div>
+                                <strong>{{ $product->name }}</strong>
+                                @php($description = $product->description_nl ?: ($product->description_en ?: $product->description))
+                                @if($description)<p>{{ $description }}</p>@endif
+                            </div>
+                            <span>€{{ number_format((float) $product->price, 2, ',', '.') }}</span>
+                        </div>
+                    @endforeach
+                </div>
+            @endforeach
+        </div>
+    </div>
 
     {{-- FOOTER --}}
     <footer class="footer">
@@ -209,6 +290,35 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
         integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
     <style>
+        .full-menu-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, .6);
+            z-index: 60;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .full-menu-modal.open { display: flex; }
+        .full-menu-dialog {
+            background: #fff;
+            width: min(980px, 100%);
+            max-height: 85vh;
+            overflow-y: auto;
+            border-radius: 16px;
+            padding: 24px;
+            position: relative;
+            animation: fadeIn .2s ease;
+        }
+        .full-menu-close {
+            position: absolute; right: 16px; top: 10px; border: none; background: none; font-size: 30px; cursor: pointer;
+        }
+        .full-menu-group { margin-top: 20px; border-top: 1px solid #eee; padding-top: 14px; }
+        .full-menu-group h4 { font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: #ca3f24; }
+        .full-menu-item { display: flex; justify-content: space-between; gap: 12px; margin: 8px 0; }
+        .full-menu-item p { font-size: 12px; color: #6b6b6b; margin: 2px 0 0; }
+        .full-menu-item span { white-space: nowrap; font-weight: 700; }
         .leaflet-popup-content-wrapper {
             background: #000;
             color: #fff;
@@ -283,6 +393,21 @@
                 map.fitBounds(group.getBounds().pad(0.15));
             } else {
                 map.setView([52.3676, 4.9041], 12);
+            }
+
+            var openBtn = document.getElementById('open-full-menu');
+            var closeBtn = document.getElementById('close-full-menu');
+            var modal = document.getElementById('full-menu-modal');
+            if (openBtn && closeBtn && modal) {
+                openBtn.addEventListener('click', function() {
+                    modal.classList.add('open');
+                });
+                closeBtn.addEventListener('click', function() {
+                    modal.classList.remove('open');
+                });
+                modal.addEventListener('click', function(e) {
+                    if (e.target === modal) modal.classList.remove('open');
+                });
             }
         });
     </script>

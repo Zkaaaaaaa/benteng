@@ -18,6 +18,7 @@ class Category extends Model
         'subtitle',
         'sort_order',
         'show_on_home',
+        'rames_section',
     ];
 
     protected function casts(): array
@@ -25,6 +26,7 @@ class Category extends Model
         return [
             'show_on_home' => 'boolean',
             'sort_order' => 'integer',
+            'rames_section' => 'string',
         ];
     }
 

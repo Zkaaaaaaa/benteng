@@ -24,6 +24,8 @@ class Product extends Model
         'is_spicy',
         'sort_order',
         'is_active',
+        'is_rames',
+        'rames_group',
     ];
 
     protected function casts(): array
@@ -32,6 +34,8 @@ class Product extends Model
             'price' => 'decimal:2',
             'is_spicy' => 'boolean',
             'is_active' => 'boolean',
+            'is_rames' => 'boolean',
+            'rames_group' => 'string',
             'sort_order' => 'integer',
         ];
     }
@@ -49,6 +53,16 @@ class Product extends Model
     public function scopeOrdered(Builder $query): Builder
     {
         return $query->orderBy('sort_order')->orderBy('name');
+    }
+
+    public function scopeRames(Builder $query): Builder
+    {
+        return $query->where('is_rames', true);
+    }
+
+    public function scopeRamesGroup(Builder $query, string $group): Builder
+    {
+        return $query->where('rames_group', $group);
     }
 
     public function getImageUrlAttribute(): ?string
