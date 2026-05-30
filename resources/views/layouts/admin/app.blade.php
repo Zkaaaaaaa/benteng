@@ -15,6 +15,7 @@
         rel="stylesheet">
 
     {{-- Icons --}}
+    <link rel="icon" type="image/png" href="{{ asset('assets/images/favicon.png') }}">
     <link rel="stylesheet" href="{{ asset('plugins/fontawesome-free/css/all.min.css') }}">
 
     {{-- AdminLTE core (grid, utilities) --}}
