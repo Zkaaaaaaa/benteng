@@ -16,18 +16,20 @@ class ProductController extends Controller
     {
         $products = Product::with('category')->latest()->get();
         $categories = Category::orderBy('name', 'asc')->get();
+
         return view('admin.product.index', compact('products', 'categories'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'category_id' => 'required|exists:categories,id',
-            'name' => 'required|string|max:255|unique:products,name',
-            'price' => 'required|numeric|min:0',
+            'category_id'    => 'required|exists:categories,id',
+            'name'           => ['required', 'string', 'max:255',
+                                 Rule::unique('products')->where('category_id', $request->category_id)],
+            'price'          => 'required|numeric|min:0',
             'description_en' => 'nullable|string',
             'description_nl' => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'image'          => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
 
         $imagePath = null;
@@ -35,15 +37,17 @@ class ProductController extends Controller
             $imagePath = $request->file('image')->store('products', 'public');
         }
 
+        $category = Category::findOrFail($request->category_id);
+
         Product::create([
-            'category_id' => $request->category_id,
-            'name' => $request->name,
-            'slug' => Str::slug($request->name),
-            'price' => $request->price,
+            'category_id'    => $request->category_id,
+            'name'           => $request->name,
+            'slug'           => Str::slug($request->name) . '-' . $category->slug,
+            'price'          => $request->price,
             'description_en' => $request->description_en,
             'description_nl' => $request->description_nl,
-            'description' => $request->description_en ?: $request->description_nl,
-            'image' => $imagePath,
+            'description'    => $request->description_en ?: $request->description_nl,
+            'image'          => $imagePath,
         ]);
 
         return back()->with('success', 'Produk baru berhasil ditambahkan!');
@@ -52,31 +56,33 @@ class ProductController extends Controller
     public function update(Request $request, Product $product)
     {
         $request->validate([
-            'category_id' => 'required|exists:categories,id',
-            'name' => ['required', 'string', 'max:255', Rule::unique('products', 'name')->ignore($product->getKey())],
-            'price' => 'required|numeric|min:0',
+            'category_id'    => 'required|exists:categories,id',
+            'name'           => ['required', 'string', 'max:255',
+                                 Rule::unique('products')->where('category_id', $request->category_id)->ignore($product->id)],
+            'price'          => 'required|numeric|min:0',
             'description_en' => 'nullable|string',
             'description_nl' => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'image'          => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
 
-        $imagePath = $product->image;
         if ($request->hasFile('image')) {
             if ($product->image) {
                 Storage::disk('public')->delete($product->image);
             }
             $imagePath = $request->file('image')->store('products', 'public');
+        } else {
+            $imagePath = $product->image;
         }
 
         $product->update([
-            'category_id' => $request->category_id,
-            'name' => $request->name,
-            'slug' => Str::slug($request->name),
-            'price' => $request->price,
+            'category_id'    => $request->category_id,
+            'name'           => $request->name,
+            'slug'           => Str::slug($request->name) . '-' . $product->category->slug,
+            'price'          => $request->price,
             'description_en' => $request->description_en,
             'description_nl' => $request->description_nl,
-            'description' => $request->description_en ?: $request->description_nl,
-            'image' => $imagePath,
+            'description'    => $request->description_en ?: $request->description_nl,
+            'image'          => $imagePath,
         ]);
 
         return back()->with('success', 'Data produk berhasil diperbarui!');
@@ -87,7 +93,9 @@ class ProductController extends Controller
         if ($product->image) {
             Storage::disk('public')->delete($product->image);
         }
-        Product::destroy($product->id);
+
+        $product->delete();
+
         return back()->with('success', 'Produk berhasil dihapus!');
     }
 }

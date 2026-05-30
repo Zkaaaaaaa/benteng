@@ -46,7 +46,7 @@ class SiteSettingsSeeder extends Seeder
             'title' => 'OPENING HOUR',
             'opening_hour' => 'Mon–Fri 09:00–22:00',
 
-            'logo' => 'assets/images/logo.png',
+            'logo' => 'assets/images/logo.jpg',
         ]);
     }
 }

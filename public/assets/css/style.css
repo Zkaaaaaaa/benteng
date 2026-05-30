@@ -920,7 +920,7 @@ ul {
     max-width: var(--container-wide);
     margin: 0 auto;
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     justify-content: space-between;
     gap: clamp(2.5rem, 6vw, 5rem);
     padding-bottom: 3rem;
@@ -932,7 +932,7 @@ ul {
 }
 
 .footer__logo {
-    height: clamp(72px, 10vw, 96px);
+    height: clamp(110px, 14vw, 140px);
     width: auto;
     margin-bottom: 0.75rem;
 }
@@ -955,6 +955,7 @@ ul {
 
 .footer__block--address {
     min-width: 260px;
+    text-align: left;
 }
 
 .footer__block--meta {
@@ -962,6 +963,7 @@ ul {
     flex-direction: column;
     gap: 2rem;
     min-width: 220px;
+    text-align: center;
 }
 
 .footer__title {
@@ -971,6 +973,7 @@ ul {
     text-transform: uppercase;
     margin-bottom: 1.15rem;
     color: var(--clr-white);
+    text-align: center;
 }
 
 .footer__location {
