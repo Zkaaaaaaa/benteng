@@ -49,7 +49,7 @@ class SiteSettingsNLSeeder extends Seeder
             'title' => 'OPENINGSTIJDEN',
             'opening_hour' => 'Mo–Fr 09:00–22:00',
             
-            'logo' => 'assets/images/logo.jpg',
+            'logo' => 'assets/images/logo.png',
         ]);
     }
 }

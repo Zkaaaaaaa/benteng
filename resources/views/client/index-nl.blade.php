@@ -37,6 +37,11 @@
         </div>
     </section>
 
+    @include('client.partials.gallery', [
+        'galleryHeading' => 'Galerij',
+        'galleryEmptyText' => 'Binnenkort tonen we hier onze gerechten.',
+    ])
+
     {{-- ═══════════════════════════════════════
      LOCATIES SECTION
 ════════════════════════════════════════ --}}

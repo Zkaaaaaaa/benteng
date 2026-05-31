@@ -9,12 +9,19 @@ use Illuminate\Support\Str;
 
 class CategoryController extends Controller
 {
+    /**
+     * Menampilkan daftar semua kategori menu.
+     */
     public function index()
     {
         $categories = Category::latest()->get();
+
         return view('admin.category.index', compact('categories'));
     }
 
+    /**
+     * Menyimpan kategori baru ke database.
+     */
     public function store(Request $request)
     {
         $request->validate([
@@ -29,6 +36,9 @@ class CategoryController extends Controller
         return back()->with('success', 'Kategori baru berhasil ditambahkan!');
     }
 
+    /**
+     * Memperbarui data kategori yang sudah ada.
+     */
     public function update(Request $request, Category $category)
     {
         $request->validate([
@@ -43,9 +53,13 @@ class CategoryController extends Controller
         return back()->with('success', 'Kategori berhasil diperbarui!');
     }
 
+    /**
+     * Menghapus kategori dari database.
+     */
     public function destroy(Category $category)
     {
         $category->delete();
+
         return back()->with('success', 'Kategori berhasil dihapus!');
     }
 }

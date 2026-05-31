@@ -16,39 +16,9 @@ class MenuSeeder extends Seeder
 
         $menu = [
             [
-                'name' => 'Rames klein',
-                'slug' => 'rames-klein',
-                'subtitle' => '1x vlees of vis, 1x groente & sambal goreng ei',
-                'sort_order' => 1,
-                'show_on_home' => false,
-                'products' => [
-                    ['name' => 'Nasi Putih', 'description' => 'Witte rijst', 'price' => 13.75],
-                    ['name' => 'Longtong Rames', 'description' => 'Blokjes kleefrijst', 'price' => 13.75],
-                    ['name' => 'Nasi Koening', 'description' => 'Gele rijst in kokos', 'price' => 13.75],
-                    ['name' => 'Nasi Goreng', 'description' => 'Gebakken rijst', 'price' => 13.75],
-                    ['name' => 'Nasi Djawa', 'description' => 'Pittig gebakken rijst', 'price' => 13.75, 'is_spicy' => true],
-                    ['name' => 'Bami', 'description' => 'Bami', 'price' => 13.75],
-                ],
-            ],
-            [
-                'name' => 'Rames normaal',
-                'slug' => 'rames-normaal',
-                'subtitle' => '2x vlees of vis, 2x groente, Tahoe of Tempe & sambal goreng ei',
-                'sort_order' => 2,
-                'show_on_home' => false,
-                'products' => [
-                    ['name' => 'Nasi Putih', 'description' => 'Witte rijst', 'price' => 16.75],
-                    ['name' => 'Longtong Rames', 'description' => 'Blokjes kleefrijst', 'price' => 16.75],
-                    ['name' => 'Nasi Koening', 'description' => 'Gele rijst in kokos', 'price' => 16.75],
-                    ['name' => 'Nasi Goreng', 'description' => 'Gebakken rijst', 'price' => 16.75],
-                    ['name' => 'Nasi Djawa', 'description' => 'Pittig gebakken rijst', 'price' => 16.75, 'is_spicy' => true],
-                    ['name' => 'Bami', 'description' => 'Bami', 'price' => 16.75],
-                ],
-            ],
-            [
                 'name' => 'Gado gado of sate menu',
                 'slug' => 'gado-gado-of-sate-menu',
-                'sort_order' => 3,
+                'sort_order' => 1,
                 'show_on_home' => false,
                 'products' => [
                     ['name' => 'Sate Babi Menu', 'description' => '3 stokjes saté, atjar ketimoen, gebakken uitjes en kroepoek. Kies witte rijst, nasi goreng of bami', 'price' => 10.50],
@@ -60,7 +30,7 @@ class MenuSeeder extends Seeder
                 'name' => 'Kip',
                 'slug' => 'kip',
                 'image' => 'assets/img/kip-cashew.jpg',
-                'sort_order' => 4,
+                'sort_order' => 2,
                 'show_on_home' => true,
                 'products' => [
                     ['name' => 'Ayam Klateng', 'description' => 'Geroosterde kippedijen in een marinade van kokos, limoenblad en limoengras', 'price' => 3.50, 'unit_label' => '/ 100 gr.'],
@@ -72,7 +42,7 @@ class MenuSeeder extends Seeder
                 'name' => 'Vlees',
                 'slug' => 'vlees',
                 'image' => 'assets/img/vlees.jpg',
-                'sort_order' => 5,
+                'sort_order' => 3,
                 'show_on_home' => true,
                 'products' => [
                     ['name' => 'Daging Semoor', 'description' => 'Rundvlees gesmoord in zoete sojasaus', 'price' => 3.50, 'unit_label' => '/ 100 gr.'],
@@ -86,7 +56,7 @@ class MenuSeeder extends Seeder
                 'name' => 'Vis',
                 'slug' => 'vis',
                 'image' => 'assets/img/vis.jpg',
-                'sort_order' => 6,
+                'sort_order' => 4,
                 'show_on_home' => true,
                 'products' => [
                     ['name' => 'Sambal Goreng Oedang', 'description' => 'Garnalen met petehbonen', 'price' => 4.25, 'unit_label' => '/ 100 gr.'],
@@ -97,7 +67,7 @@ class MenuSeeder extends Seeder
                 'name' => 'Groente',
                 'slug' => 'groente',
                 'image' => 'assets/img/Sayoer-Lodeh.jpg',
-                'sort_order' => 7,
+                'sort_order' => 5,
                 'show_on_home' => true,
                 'products' => [
                     ['name' => 'Sambal Goreng Boontjes', 'description' => 'Pittig gekruide boontjes met tahoe en petehbonen', 'price' => 2.50, 'unit_label' => '/ 100 gr.'],
@@ -113,7 +83,7 @@ class MenuSeeder extends Seeder
                 'name' => 'Vegetarisch',
                 'slug' => 'vegetarisch',
                 'image' => 'assets/img/vegetarisch.jpg',
-                'sort_order' => 8,
+                'sort_order' => 6,
                 'show_on_home' => true,
                 'products' => [
                     ['name' => 'Tahoe Oblok', 'description' => 'Tofu met petehbonen in kokossaus', 'price' => 3.00, 'unit_label' => '/ 100 gr.'],
@@ -125,7 +95,7 @@ class MenuSeeder extends Seeder
             [
                 'name' => 'Soep',
                 'slug' => 'soep',
-                'sort_order' => 9,
+                'sort_order' => 7,
                 'show_on_home' => false,
                 'products' => [
                     ['name' => 'Soto Ayam Taugé', 'description' => "Oma's bouillon soep rijkelijk gevuld met kip, tauge en een gekookt eitje", 'price' => 8.00],
@@ -134,7 +104,7 @@ class MenuSeeder extends Seeder
             [
                 'name' => 'Hartige snacks',
                 'slug' => 'hartige-snacks',
-                'sort_order' => 10,
+                'sort_order' => 8,
                 'show_on_home' => false,
                 'products' => [
                     ['name' => 'Batjang (Op bestelling)', 'description' => 'Kleefrijst verpakt in bamboebladeren, gevuld met zoet gekruide rund / varken of kip', 'price' => 5.00],
@@ -149,7 +119,7 @@ class MenuSeeder extends Seeder
             [
                 'name' => 'Zoete snacks',
                 'slug' => 'zoete-snacks',
-                'sort_order' => 11,
+                'sort_order' => 9,
                 'show_on_home' => false,
                 'products' => [
                     ['name' => 'Lapis (op bestelling)', 'description' => 'Geleipudding met rozensmaak', 'price' => 3.25],
@@ -159,7 +129,7 @@ class MenuSeeder extends Seeder
             [
                 'name' => 'Dranken',
                 'slug' => 'dranken',
-                'sort_order' => 12,
+                'sort_order' => 10,
                 'show_on_home' => false,
                 'products' => [
                     ['name' => 'Coca Cola, Coca Cola light, Coca Cola Zero', 'price' => 2.95],
@@ -191,14 +161,14 @@ class MenuSeeder extends Seeder
             foreach ($products as $productSort => $productData) {
                 Product::create([
                     'category_id' => $category->id,
-                    'name' => $productData['name'],
-                    'slug' => Str::slug($productData['name']) . '-' . $category->slug,
+                    'name'        => $productData['name'],
+                    'slug'        => Str::slug($productData['name']) . '-' . $category->slug,
                     'description' => $productData['description'] ?? null,
-                    'price' => $productData['price'],
-                    'unit_label' => $productData['unit_label'] ?? null,
-                    'is_spicy' => $productData['is_spicy'] ?? false,
-                    'sort_order' => $productSort + 1,
-                    'is_active' => true,
+                    'price'       => $productData['price'],
+                    'unit_label'  => $productData['unit_label'] ?? null,
+                    'is_spicy'    => $productData['is_spicy'] ?? false,
+                    'sort_order'  => $productSort + 1,
+                    'is_active'   => true,
                 ]);
             }
         }

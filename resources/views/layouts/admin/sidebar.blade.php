@@ -53,6 +53,12 @@
             Manage Rames
         </a>
 
+        <a href="{{ route('admin.gallery.edit') }}"
+            class="btg-nav-link {{ request()->routeIs('admin.gallery.*') ? 'active' : '' }}">
+            <i class="fas fa-images"></i>
+            Galeri Foto
+        </a>
+
         <a href="{{ route('admin.site-settings.edit') }}"
             class="btg-nav-link {{ request()->routeIs('admin.site-settings.*') ? 'active' : '' }}">
             <i class="fas fa-cog"></i>

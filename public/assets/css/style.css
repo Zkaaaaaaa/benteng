@@ -165,13 +165,13 @@ ul {
     right: 0;
     z-index: 200;
     height: var(--nav-height);
-    background: transparent;
+    background: ;
     border-bottom: 1px solid transparent;
     transition: background var(--transition), border-color var(--transition), box-shadow var(--transition), height var(--transition);
 }
 
 .navbar.is-scrolled {
-    background: rgba(255, 255, 255, 0.98);
+    background: rgba(10, 10, 10, 0.95);
     border-bottom-color: var(--clr-border);
     box-shadow: var(--shadow-nav);
     backdrop-filter: blur(14px);
@@ -241,7 +241,7 @@ ul {
 }
 
 .navbar.is-scrolled .navbar__link {
-    color: var(--clr-charcoal);
+    color: var(--clr-white);
 }
 
 .navbar.is-scrolled .navbar__link:hover {
@@ -262,7 +262,7 @@ ul {
 }
 
 .navbar.is-scrolled .navbar__lang {
-    border-left-color: var(--clr-border);
+    border-left-color: rgba(255, 255, 255, 0.25);
 }
 
 .navbar__lang-btn {
@@ -287,8 +287,8 @@ ul {
 }
 
 .navbar.is-scrolled .navbar__lang-btn {
-    color: var(--clr-charcoal);
-    border-color: var(--clr-border);
+    color: rgba(255, 255, 255, 0.85); 
+    border-color: rgba(255, 255, 255, 0.2);
 }
 
 .navbar.is-scrolled .navbar__lang-btn.is-active {
@@ -320,7 +320,7 @@ ul {
 }
 
 .navbar.is-scrolled .navbar__toggle span {
-    background: var(--clr-charcoal);
+    background: var(--clr-white);
 }
 
 .navbar__toggle.is-active span:nth-child(1) {
@@ -498,6 +498,7 @@ ul {
     grid-template-columns: 1.05fr 1fr;
     gap: clamp(2rem, 4vw, 3rem);
     align-items: stretch;
+    min-width: 0;
 }
 
 .locations__cards {
@@ -561,15 +562,29 @@ ul {
 .locations__map {
     border-radius: var(--radius-lg);
     overflow: hidden;
-    min-height: 100%;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
     border: 1px solid var(--clr-border);
     box-shadow: var(--shadow-sm);
+    height: 520px;
+    position: relative;
+    isolation: isolate;
 }
 
 .locations__map iframe,
 #client-locations-map {
-    min-height: 520px;
-    height: 100%;
+    display: block;
+    width: 100% !important;
+    max-width: 100%;
+    height: 100% !important;
+    min-height: 100%;
+}
+
+#client-locations-map .leaflet-container {
+    width: 100% !important;
+    height: 100% !important;
+    border-radius: inherit;
 }
 
 /* ════════════════════════════════════════
@@ -1071,7 +1086,8 @@ ul {
     }
 
     #client-locations-map {
-        min-height: 320px;
+        min-height: unset;
+        height: 400px;
     }
 }
 

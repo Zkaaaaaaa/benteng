@@ -6,12 +6,15 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class ProductController extends Controller
 {
+    /**
+     * Menampilkan daftar semua produk beserta kategorinya.
+     */
     public function index()
     {
         $products = Product::with('category')->latest()->get();
@@ -20,18 +23,26 @@ class ProductController extends Controller
         return view('admin.product.index', compact('products', 'categories'));
     }
 
+    /**
+     * Menyimpan produk baru ke database.
+     */
     public function store(Request $request)
     {
         $request->validate([
             'category_id'    => 'required|exists:categories,id',
-            'name'           => ['required', 'string', 'max:255',
-                                 Rule::unique('products')->where('category_id', $request->category_id)],
+            'name'           => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('products')->where('category_id', $request->category_id),
+            ],
             'price'          => 'required|numeric|min:0',
             'description_en' => 'nullable|string',
             'description_nl' => 'nullable|string',
             'image'          => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
 
+        // Unggah gambar produk jika ada file yang dikirim
         $imagePath = null;
         if ($request->hasFile('image')) {
             $imagePath = $request->file('image')->store('products', 'public');
@@ -53,18 +64,26 @@ class ProductController extends Controller
         return back()->with('success', 'Produk baru berhasil ditambahkan!');
     }
 
+    /**
+     * Memperbarui data produk yang sudah ada.
+     */
     public function update(Request $request, Product $product)
     {
         $request->validate([
             'category_id'    => 'required|exists:categories,id',
-            'name'           => ['required', 'string', 'max:255',
-                                 Rule::unique('products')->where('category_id', $request->category_id)->ignore($product->id)],
+            'name'           => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('products')->where('category_id', $request->category_id)->ignore($product->id),
+            ],
             'price'          => 'required|numeric|min:0',
             'description_en' => 'nullable|string',
             'description_nl' => 'nullable|string',
             'image'          => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
 
+        // Ganti gambar lama jika admin mengunggah file baru
         if ($request->hasFile('image')) {
             if ($product->image) {
                 Storage::disk('public')->delete($product->image);
@@ -88,6 +107,9 @@ class ProductController extends Controller
         return back()->with('success', 'Data produk berhasil diperbarui!');
     }
 
+    /**
+     * Menghapus produk beserta file gambarnya dari storage.
+     */
     public function destroy(Product $product)
     {
         if ($product->image) {

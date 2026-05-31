@@ -10,15 +10,22 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
+/**
+ * Pengujian fitur CRUD kategori dan produk di panel admin.
+ */
 class ProductCrudTest extends TestCase
 {
     use RefreshDatabase;
 
     private User $admin;
 
+    /**
+     * Menyiapkan user admin untuk setiap skenario test.
+     */
     protected function setUp(): void
     {
         parent::setUp();
+
         $this->admin = User::factory()->create();
     }
 
@@ -26,7 +33,11 @@ class ProductCrudTest extends TestCase
     // CATEGORY TESTS
     // ══════════════════════════════════════
 
-    /** @test */
+    /**
+     * Memastikan admin dapat membuka halaman daftar kategori.
+     *
+     * @test
+     */
     public function admin_can_view_categories_index()
     {
         $response = $this->actingAs($this->admin)
@@ -35,7 +46,11 @@ class ProductCrudTest extends TestCase
         $response->assertStatus(200);
     }
 
-    /** @test */
+    /**
+     * Memastikan admin dapat menambahkan kategori baru.
+     *
+     * @test
+     */
     public function admin_can_create_category()
     {
         $response = $this->actingAs($this->admin)
@@ -48,7 +63,11 @@ class ProductCrudTest extends TestCase
         $this->assertDatabaseHas('categories', ['name' => 'Kategori Test']);
     }
 
-    /** @test */
+    /**
+     * Memastikan admin dapat memperbarui nama kategori.
+     *
+     * @test
+     */
     public function admin_can_update_category()
     {
         $category = Category::factory()->create(['name' => 'Lama']);
@@ -64,7 +83,11 @@ class ProductCrudTest extends TestCase
         $this->assertDatabaseMissing('categories', ['name' => 'Lama']);
     }
 
-    /** @test */
+    /**
+     * Memastikan admin dapat menghapus kategori.
+     *
+     * @test
+     */
     public function admin_can_delete_category()
     {
         $category = Category::factory()->create();
@@ -76,7 +99,11 @@ class ProductCrudTest extends TestCase
         $this->assertDatabaseMissing('categories', ['id' => $category->id]);
     }
 
-    /** @test */
+    /**
+     * Memastikan nama kategori harus unik saat dibuat.
+     *
+     * @test
+     */
     public function category_name_must_be_unique()
     {
         Category::factory()->create(['name' => 'Duplikat']);
@@ -94,7 +121,11 @@ class ProductCrudTest extends TestCase
     // PRODUCT TESTS
     // ══════════════════════════════════════
 
-    /** @test */
+    /**
+     * Memastikan admin dapat membuka halaman daftar produk.
+     *
+     * @test
+     */
     public function admin_can_view_products_index()
     {
         $response = $this->actingAs($this->admin)
@@ -103,7 +134,11 @@ class ProductCrudTest extends TestCase
         $response->assertStatus(200);
     }
 
-    /** @test */
+    /**
+     * Memastikan admin dapat menambahkan produk baru.
+     *
+     * @test
+     */
     public function admin_can_create_product()
     {
         $category = Category::factory()->create();
@@ -124,11 +159,15 @@ class ProductCrudTest extends TestCase
         ]);
     }
 
-    /** @test */
+    /**
+     * Memastikan admin dapat memperbarui data produk.
+     *
+     * @test
+     */
     public function admin_can_update_product()
     {
         $category = Category::factory()->create();
-        $product  = Product::factory()->create([
+        $product = Product::factory()->create([
             'category_id' => $category->id,
             'name'        => 'Produk Lama',
             'price'       => 10.00,
@@ -146,11 +185,15 @@ class ProductCrudTest extends TestCase
         $this->assertDatabaseMissing('products', ['name' => 'Produk Lama']);
     }
 
-    /** @test */
+    /**
+     * Memastikan admin dapat menghapus produk.
+     *
+     * @test
+     */
     public function admin_can_delete_product()
     {
         $category = Category::factory()->create();
-        $product  = Product::factory()->create(['category_id' => $category->id]);
+        $product = Product::factory()->create(['category_id' => $category->id]);
 
         $response = $this->actingAs($this->admin)
             ->delete(route('admin.products.destroy', $product));
@@ -159,7 +202,11 @@ class ProductCrudTest extends TestCase
         $this->assertDatabaseMissing('products', ['id' => $product->id]);
     }
 
-    /** @test */
+    /**
+     * Memastikan nama produk harus unik di dalam kategori yang sama.
+     *
+     * @test
+     */
     public function product_name_must_be_unique_within_same_category()
     {
         $category = Category::factory()->create();
@@ -175,7 +222,11 @@ class ProductCrudTest extends TestCase
         $response->assertSessionHasErrors('name');
     }
 
-    /** @test */
+    /**
+     * Memastikan nama produk boleh sama jika berada di kategori berbeda.
+     *
+     * @test
+     */
     public function product_name_can_be_same_in_different_categories()
     {
         $cat1 = Category::factory()->create();
@@ -193,11 +244,15 @@ class ProductCrudTest extends TestCase
         $this->assertDatabaseCount('products', 2);
     }
 
-    /** @test */
+    /**
+     * Memastikan produk dapat diupdate tanpa mengubah nama (validasi unique diabaikan).
+     *
+     * @test
+     */
     public function product_can_be_updated_without_changing_name()
     {
         $category = Category::factory()->create();
-        $product  = Product::factory()->create([
+        $product = Product::factory()->create([
             'category_id' => $category->id,
             'name'        => 'Nasi Putih',
             'price'       => 13.75,
@@ -214,7 +269,11 @@ class ProductCrudTest extends TestCase
         $this->assertDatabaseHas('products', ['name' => 'Nasi Putih', 'price' => 15.00]);
     }
 
-    /** @test */
+    /**
+     * Memastikan gambar produk tersimpan ke disk public saat upload.
+     *
+     * @test
+     */
     public function product_image_is_uploaded_and_stored()
     {
         Storage::fake('public');
@@ -229,21 +288,32 @@ class ProductCrudTest extends TestCase
             ]);
 
         $response->assertRedirect();
+
         $product = Product::where('name', 'Produk Foto')->first();
         Storage::disk('public')->assertExists($product->image);
     }
 
-    /** @test */
+    /**
+     * Memastikan tamu (belum login) tidak dapat mengakses halaman produk admin.
+     *
+     * @test
+     */
     public function guest_cannot_access_admin_products()
     {
         $response = $this->get(route('admin.products.index'));
+
         $response->assertRedirect(route('login'));
     }
 
-    /** @test */
+    /**
+     * Memastikan tamu (belum login) tidak dapat mengakses halaman kategori admin.
+     *
+     * @test
+     */
     public function guest_cannot_access_admin_categories()
     {
         $response = $this->get(route('admin.categories.index'));
+
         $response->assertRedirect(route('login'));
     }
 }

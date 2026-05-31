@@ -1,0 +1,424 @@
+/* ═══════════════════════════════════════
+   FOOD GALLERY — isolated styles
+═══════════════════════════════════════ */
+
+.food-gallery {
+    background: var(--clr-white, #fff);
+    padding: clamp(4rem, 9vw, 6.5rem) clamp(1.25rem, 4vw, 2rem);
+    overflow: hidden;
+}
+
+.food-gallery__container {
+    max-width: min(1280px, 100%);
+    margin: 0 auto;
+}
+
+.food-gallery__header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.food-gallery.is-visible .food-gallery__header {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.food-gallery__title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(3rem, 7vw, 4.75rem);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--clr-black, #0a0a0a);
+    line-height: 1;
+}
+
+.food-gallery__carousel-wrap {
+    position: relative;
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.65s ease 0.12s, transform 0.65s ease 0.12s;
+}
+
+.food-gallery.is-visible .food-gallery__carousel-wrap {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.food-gallery__viewport {
+    overflow: hidden;
+    width: 100%;
+    cursor: grab;
+    user-select: none;
+    touch-action: pan-y;
+}
+
+.food-gallery__viewport:active {
+    cursor: grabbing;
+}
+
+.food-gallery__track {
+    display: flex;
+    gap: var(--gallery-gap, 20px);
+    will-change: transform;
+}
+
+.food-gallery__card {
+    flex: 0 0 var(--gallery-card-w, 380px);
+    width: var(--gallery-card-w, 380px);
+    opacity: 0;
+    transform: translateY(16px);
+    animation: galleryCardIn 0.55s ease forwards;
+}
+
+.food-gallery.is-visible .food-gallery__card:nth-child(1) { animation-delay: 0.08s; }
+.food-gallery.is-visible .food-gallery__card:nth-child(2) { animation-delay: 0.16s; }
+.food-gallery.is-visible .food-gallery__card:nth-child(3) { animation-delay: 0.24s; }
+.food-gallery.is-visible .food-gallery__card:nth-child(4) { animation-delay: 0.32s; }
+.food-gallery.is-visible .food-gallery__card:nth-child(n+5) { animation-delay: 0.38s; }
+
+@keyframes galleryCardIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.food-gallery__card-inner {
+    position: relative;
+    width: 100%;
+    height: var(--gallery-card-h, 280px);
+    border-radius: var(--radius-lg, 12px);
+    overflow: hidden;
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.12);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.food-gallery__card-inner img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.45s ease;
+}
+
+.food-gallery__card:hover .food-gallery__card-inner img {
+    transform: scale(1.05);
+}
+
+.food-gallery__card-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: flex-end;
+    padding: 1.25rem;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.75) 0%, transparent 55%);
+    opacity: 0;
+    transition: opacity 0.35s ease;
+}
+
+.food-gallery__card:hover .food-gallery__card-overlay {
+    opacity: 1;
+}
+
+.food-gallery__card-overlay span {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #fff;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.food-gallery__nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 48px;
+    height: 48px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.95);
+    color: var(--clr-black, #0a0a0a);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    transition: background 0.25s ease, color 0.25s ease, transform 0.2s ease;
+}
+
+.food-gallery__nav:hover:not(:disabled) {
+    background: #c0392b;
+    color: #fff;
+}
+
+.food-gallery__nav:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+}
+
+.food-gallery__nav--prev {
+    left: -12px;
+}
+
+.food-gallery__nav--next {
+    right: -12px;
+}
+
+.food-gallery__empty {
+    text-align: center;
+    padding: 3rem 1.5rem;
+    color: var(--clr-grey, #6b6b6b);
+    font-size: 1.05rem;
+}
+
+/* ── Admin gallery (scoped) ── */
+.gallery-admin__dropzone {
+    border: 2px dashed var(--btg-border, #ede8e3);
+    border-radius: 10px;
+    padding: 2rem 1.5rem;
+    text-align: center;
+    cursor: pointer;
+    background: var(--btg-bg, #f7f4f0);
+    transition: border-color 0.2s, background 0.2s;
+}
+
+.gallery-admin__dropzone.is-dragover,
+.gallery-admin__dropzone:hover {
+    border-color: var(--btg-accent, #c0392b);
+    background: rgba(192, 57, 43, 0.06);
+}
+
+.gallery-admin__dropzone p {
+    margin: 0.5rem 0 0;
+    font-size: 13px;
+    color: var(--btg-muted, #9e8f87);
+}
+
+.gallery-admin__preview {
+    margin-top: 14px;
+}
+
+.gallery-admin__preview-btn {
+    display: inline-flex;
+    padding: 0;
+    border: none;
+    background: none;
+    cursor: pointer;
+    border-radius: 6px;
+    line-height: 0;
+    transition: box-shadow 0.2s ease;
+}
+
+.gallery-admin__preview-btn:hover {
+    box-shadow: 0 0 0 2px var(--btg-accent, #c0392b);
+}
+
+.gallery-admin__preview-btn img {
+    width: 72px;
+    height: 72px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid var(--btg-border);
+    display: block;
+    pointer-events: none;
+}
+
+.gallery-admin__open-preview {
+    padding: 0;
+    border: none;
+    background: none;
+    text-align: left;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: color 0.15s ease;
+}
+
+.gallery-admin__open-preview:hover .gallery-admin__name {
+    color: var(--btg-accent, #c0392b);
+}
+
+.gallery-admin__modal-img {
+    max-width: 100%;
+    max-height: min(65vh, 480px);
+    width: auto;
+    height: auto;
+    border-radius: 8px;
+    object-fit: contain;
+}
+
+/* Baris tabel: thumbnail kecil sejajar teks */
+.gallery-admin__table tbody td {
+    vertical-align: middle;
+}
+
+.gallery-admin__inline {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+}
+
+.gallery-admin__inline-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.gallery-admin__name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--btg-text, #2d2420);
+    line-height: 1.35;
+}
+
+.gallery-admin__date {
+    font-size: 12px;
+    color: var(--btg-muted, #9e8f87);
+    line-height: 1.3;
+}
+
+.gallery-admin__table .gallery-admin__thumb-btn {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: none;
+    background: none;
+    cursor: pointer;
+    border-radius: 6px;
+    line-height: 0;
+    overflow: hidden;
+    transition: box-shadow 0.2s ease;
+}
+
+.gallery-admin__table .gallery-admin__thumb-btn:hover {
+    box-shadow: 0 0 0 2px var(--btg-accent, #c0392b);
+}
+
+.gallery-admin__table img.gallery-admin__thumb {
+    width: 32px !important;
+    height: 32px !important;
+    max-width: 32px !important;
+    max-height: 32px !important;
+    min-width: 32px;
+    min-height: 32px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid var(--btg-border, #ede8e3);
+    display: block;
+    pointer-events: none;
+}
+
+/* Lightbox — klik foto di carousel website */
+.food-gallery__lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+}
+
+.food-gallery__lightbox[hidden] {
+    display: none !important;
+}
+
+.food-gallery__lightbox-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.82);
+    cursor: pointer;
+}
+
+.food-gallery__lightbox-dialog {
+    position: relative;
+    z-index: 1;
+    margin: 0;
+    max-width: min(720px, 100%);
+    max-height: 90vh;
+    text-align: center;
+}
+
+.food-gallery__lightbox-dialog img {
+    max-width: 100%;
+    max-height: min(78vh, 640px);
+    width: auto;
+    height: auto;
+    border-radius: 12px;
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.45);
+    object-fit: contain;
+}
+
+.food-gallery__lightbox-dialog figcaption {
+    margin-top: 1rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: #fff;
+    letter-spacing: 0.02em;
+}
+
+.food-gallery__lightbox-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    z-index: 2;
+    width: 44px;
+    height: 44px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.12);
+    color: #fff;
+    font-size: 1.75rem;
+    line-height: 1;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.food-gallery__lightbox-close:hover {
+    background: rgba(255, 255, 255, 0.22);
+}
+
+.food-gallery__card-inner {
+    cursor: zoom-in;
+}
+
+@media (max-width: 768px) {
+    .food-gallery__nav--prev {
+        left: 4px;
+    }
+
+    .food-gallery__nav--next {
+        right: 4px;
+    }
+
+    .food-gallery__nav {
+        width: 40px;
+        height: 40px;
+    }
+
+    .gallery-admin__table img.gallery-admin__thumb {
+        width: 28px !important;
+        height: 28px !important;
+        max-width: 28px !important;
+        max-height: 28px !important;
+        min-width: 28px;
+        min-height: 28px;
+    }
+
+    .gallery-admin__table .gallery-admin__thumb-btn {
+        width: 28px;
+        height: 28px;
+    }
+}

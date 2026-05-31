@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\GalleryController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\RamesController;
@@ -35,6 +36,7 @@ Route::middleware(['auth', 'verified'])
         Route::put('rames/settings', [RamesController::class, 'updateSettings'])->name('rames.settings.update');
         Route::post('rames/items', [RamesController::class, 'storeItem'])->name('rames.items.store');
         Route::delete('rames/items/{ramesItem}', [RamesController::class, 'destroyItem'])->name('rames.items.destroy');
+        Route::get('gallery/edit', [GalleryController::class, 'edit'])->name('gallery.edit');
         Route::get('site-settings/edit', [SiteSettingController::class, 'edit'])->name('site-settings.edit');
         Route::put('site-settings', [SiteSettingController::class, 'update'])->name('site-settings.update');
         Route::get('site-settings-nl/edit', [SiteSettingNLController::class, 'edit'])->name('site-settings-nl.edit');
