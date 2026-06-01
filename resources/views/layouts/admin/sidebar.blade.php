@@ -11,16 +11,19 @@
         </div>
     </a>
 
-    {{-- User --}}
-    <div class="btg-user">
+    {{-- User → Edit Profil --}}
+    <a href="{{ route('profile.edit') }}"
+        class="btg-user {{ request()->routeIs('profile.*') ? 'is-active' : '' }}"
+        title="Edit profil">
         <div class="btg-user-avatar">
             {{ strtoupper(substr(auth()->user()->name ?? 'A', 0, 1)) }}
         </div>
-        <div>
+        <div style="flex:1; min-width:0;">
             <div class="btg-user-name">{{ auth()->user()->name ?? 'Administrator' }}</div>
-            <div class="btg-user-role">Admin</div>
+            <div class="btg-user-role">Edit profil</div>
         </div>
-    </div>
+        <i class="fas fa-chevron-right btg-user-chevron" aria-hidden="true"></i>
+    </a>
 
     {{-- Nav --}}
     <nav style="margin-top: 20px; flex: 1;">

@@ -124,6 +124,22 @@
         }
 
         /* User panel */
+        a.btg-user {
+            text-decoration: none;
+            color: inherit;
+            cursor: pointer;
+            transition: background .18s ease, box-shadow .18s ease;
+        }
+
+        a.btg-user:hover {
+            background: rgba(255, 255, 255, .08);
+        }
+
+        a.btg-user.is-active {
+            background: rgba(192, 57, 43, .18);
+            box-shadow: inset 0 0 0 1px rgba(192, 57, 43, .35);
+        }
+
         .btg-user {
             display: flex;
             align-items: center;
@@ -132,6 +148,19 @@
             margin: 12px 12px 0;
             background: rgba(255, 255, 255, .04);
             border-radius: 10px;
+        }
+
+        .btg-user-chevron {
+            font-size: 10px;
+            color: rgba(255, 255, 255, .35);
+            flex-shrink: 0;
+            transition: color .18s ease, transform .18s ease;
+        }
+
+        a.btg-user:hover .btg-user-chevron,
+        a.btg-user.is-active .btg-user-chevron {
+            color: rgba(255, 255, 255, .7);
+            transform: translateX(2px);
         }
 
         .btg-user-avatar {
