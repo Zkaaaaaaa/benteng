@@ -21,7 +21,7 @@
         </div>
     @endif
 
-    @if ($errors->any() && ! $errors->updatePassword->any() && ! $errors->userDeletion->any())
+    @if ($errors->any() && !$errors->updatePassword->any() && !$errors->userDeletion->any())
         <div class="btg-alert danger mb-4">
             <div class="btg-alert-icon"><i class="fas fa-times"></i></div>
             <div style="flex:1;">
@@ -49,7 +49,7 @@
     <div style="display:grid; gap:20px; max-width:720px;">
         @include('profile.partials.update-profile-information-form')
         @include('profile.partials.update-password-form')
-        @include('profile.partials.delete-user-form')
+        {{-- @include('profile.partials.delete-user-form') --}}
     </div>
 @endsection
 
@@ -63,17 +63,17 @@
             document.getElementById(id)?.classList.remove('open');
         }
 
-        document.querySelectorAll('.btg-modal-overlay').forEach(function (overlay) {
-            overlay.addEventListener('click', function (e) {
+        document.querySelectorAll('.btg-modal-overlay').forEach(function(overlay) {
+            overlay.addEventListener('click', function(e) {
                 if (e.target === this) {
                     closeModal(this.id);
                 }
             });
         });
 
-        document.addEventListener('keydown', function (e) {
+        document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') {
-                document.querySelectorAll('.btg-modal-overlay.open').forEach(function (m) {
+                document.querySelectorAll('.btg-modal-overlay.open').forEach(function(m) {
                     m.classList.remove('open');
                 });
             }
@@ -83,12 +83,12 @@
             openModal('modal-delete-account');
         @endif
 
-        setTimeout(function () {
-            document.querySelectorAll('.btg-alert').forEach(function (el) {
+        setTimeout(function() {
+            document.querySelectorAll('.btg-alert').forEach(function(el) {
                 el.style.transition = 'opacity .4s, transform .4s';
                 el.style.opacity = '0';
                 el.style.transform = 'translateY(-8px)';
-                setTimeout(function () {
+                setTimeout(function() {
                     el.remove();
                 }, 400);
             });
