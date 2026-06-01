@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Support\PublicStorage;
+use App\Models\Concerns\HasStoredMedia;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Category extends Model
 {
     use HasFactory;
+    use HasStoredMedia;
 
     protected $fillable = [
         'name',
@@ -52,12 +53,12 @@ class Category extends Model
     protected static function booted(): void
     {
         static::deleting(function (Category $category) {
-            PublicStorage::delete($category->image);
+            $category->deleteStoredMedia($category->image);
         });
     }
 
     public function getImageUrlAttribute(): ?string
     {
-        return PublicStorage::url($this->image);
+        return $this->mediaUrl($this->image);
     }
 }

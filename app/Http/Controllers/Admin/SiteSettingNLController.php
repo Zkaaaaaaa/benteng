@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\SiteSettingNL;
-use App\Support\PublicStorage;
 use Illuminate\Http\Request;
 
 class SiteSettingNLController extends Controller
@@ -52,8 +51,8 @@ class SiteSettingNLController extends Controller
 
         foreach (['logo', 'img1', 'img2', 'img_store1', 'img_store2'] as $field) {
             if ($request->hasFile($field)) {
-                PublicStorage::delete($siteSetting->$field);
-                $validated[$field] = PublicStorage::store($request->file($field), 'settings');
+                $siteSetting->deleteStoredMedia($siteSetting->$field);
+                $validated[$field] = $request->file($field)->store('settings', 'public');
             } else {
                 $validated[$field] = $siteSetting->$field;
             }

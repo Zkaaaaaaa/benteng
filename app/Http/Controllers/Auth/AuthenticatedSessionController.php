@@ -17,9 +17,10 @@ class AuthenticatedSessionController extends Controller
      */
     public function create(): View
     {
-        $logo = SiteSettingNL::query()->value('logo') ?: 'assets/images/logo.png';
+        $siteSetting = SiteSettingNL::query()->first();
+        $logoUrl = $siteSetting?->logo_url ?? asset('assets/images/logo.png');
 
-        return view('auth.login', compact('logo'));
+        return view('auth.login', compact('logoUrl'));
     }
 
     /**

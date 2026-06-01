@@ -3,7 +3,7 @@
 @section('content')
     <div class="admin-login-card">
         <div class="admin-login-brand">
-            <img src="{{ stored_asset($logo ?? 'assets/images/logo.png') }}" alt="Benteng" class="admin-login-logo">
+            <img src="{{ $logoUrl }}" alt="Benteng" class="admin-login-logo">
             <p class="admin-login-heading">Admin Panel</p>
         </div>
 

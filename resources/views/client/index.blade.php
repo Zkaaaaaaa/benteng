@@ -6,7 +6,7 @@
 ════════════════════════════════════════ --}}
     <section class="hero" id="hero">
         <div class="hero__bg">
-            <img src="{{ stored_asset($site->img1) }}" alt="Indonesian food" class="hero__image">
+            <img src="{{ $site->img1_url }}" alt="Indonesian food" class="hero__image">
             <div class="hero__overlay"></div>
         </div>
         <div class="hero__inner">
@@ -26,7 +26,7 @@
     <section class="about" id="about">
         <div class="about__container">
             <div class="about__image-wrap">
-                <img src="{{ stored_asset($site->img2) }}" alt="Benteng winkel" class="about__image">
+                <img src="{{ $site->img2_url }}" alt="Benteng winkel" class="about__image">
             </div>
             <div class="about__content">
                 <h2 class="section-title">{{ $site->title2 }}</h2>
@@ -56,7 +56,7 @@
                     {{-- Locatie 1 --}}
                     <div class="location-card">
                         <div>
-                            <img src="{{ stored_asset($site->img_store1) }}" alt="Benteng">
+                            <img src="{{ $site->img_store1_url }}" alt="Benteng">
                         </div>
                         <div class="location-card__info">
                             <h3 class="location-card__name">{{ $site->store_name1 }}</h3>
@@ -72,7 +72,7 @@
                     {{-- Locatie 2 --}}
                     <div class="location-card">
                         <div>
-                            <img src="{{ stored_asset($site->img_store2) }}" alt="Benteng">
+                            <img src="{{ $site->img_store2_url }}" alt="Benteng">
                         </div>
                         <div class="location-card__info">
                             <h3 class="location-card__name">{{ $site->store_name2 }}</h3>
@@ -254,7 +254,7 @@
     <footer class="footer">
         <div class="footer__container">
             <div class="footer__brand">
-                <img src="{{ stored_asset($site->logo) }}" alt="Benteng" class="footer__logo">
+                <img src="{{ $site->logo_url }}" alt="Benteng" class="footer__logo">
             </div>
 
             <div class="footer__info">

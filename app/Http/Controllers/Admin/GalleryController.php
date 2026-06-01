@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\GalleryPhoto;
-use App\Support\PublicStorage;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -27,7 +26,7 @@ class GalleryController extends Controller
 
         GalleryPhoto::query()->create([
             'name' => $validated['name'],
-            'path' => PublicStorage::store($request->file('image'), 'gallery'),
+            'path' => $request->file('image')->store('gallery', 'public'),
         ]);
 
         return redirect()

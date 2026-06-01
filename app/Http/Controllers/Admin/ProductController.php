@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Product;
-use App\Support\PublicStorage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -42,10 +41,9 @@ class ProductController extends Controller
             'image'          => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
 
-        // Unggah gambar produk jika ada file yang dikirim
         $imagePath = null;
         if ($request->hasFile('image')) {
-            $imagePath = PublicStorage::store($request->file('image'), 'products');
+            $imagePath = $request->file('image')->store('products', 'public');
         }
 
         $category = Category::findOrFail($request->category_id);
@@ -83,10 +81,9 @@ class ProductController extends Controller
             'image'          => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
 
-        // Ganti gambar lama jika admin mengunggah file baru
         if ($request->hasFile('image')) {
-            PublicStorage::delete($product->image);
-            $imagePath = PublicStorage::store($request->file('image'), 'products');
+            $product->deleteStoredMedia($product->image);
+            $imagePath = $request->file('image')->store('products', 'public');
         } else {
             $imagePath = $product->image;
         }

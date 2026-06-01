@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
-use App\Support\PublicStorage;
+use App\Models\Concerns\HasStoredMedia;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class GalleryPhoto extends Model
 {
     use HasFactory;
+    use HasStoredMedia;
 
     protected $fillable = [
         'name',
@@ -18,12 +19,12 @@ class GalleryPhoto extends Model
     protected static function booted(): void
     {
         static::deleting(function (GalleryPhoto $photo) {
-            PublicStorage::delete($photo->path);
+            $photo->deleteStoredMedia($photo->path);
         });
     }
 
     public function getImageUrlAttribute(): ?string
     {
-        return PublicStorage::url($this->path);
+        return $this->mediaUrl($this->path);
     }
 }

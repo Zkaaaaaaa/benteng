@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Support\PublicStorage;
+use App\Models\Concerns\HasStoredMedia;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Product extends Model
 {
     use HasFactory;
+    use HasStoredMedia;
 
     protected $fillable = [
         'category_id',
@@ -47,7 +48,7 @@ class Product extends Model
     protected static function booted(): void
     {
         static::deleting(function (Product $product) {
-            PublicStorage::delete($product->image);
+            $product->deleteStoredMedia($product->image);
         });
     }
 
@@ -78,7 +79,7 @@ class Product extends Model
 
     public function getImageUrlAttribute(): ?string
     {
-        return PublicStorage::url($this->image);
+        return $this->mediaUrl($this->image);
     }
 
     public function getFormattedPriceAttribute(): string
