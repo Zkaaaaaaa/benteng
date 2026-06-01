@@ -37,6 +37,8 @@ Route::middleware(['auth', 'verified'])
         Route::post('rames/items', [RamesController::class, 'storeItem'])->name('rames.items.store');
         Route::delete('rames/items/{ramesItem}', [RamesController::class, 'destroyItem'])->name('rames.items.destroy');
         Route::get('gallery/edit', [GalleryController::class, 'edit'])->name('gallery.edit');
+        Route::post('gallery', [GalleryController::class, 'store'])->name('gallery.store');
+        Route::delete('gallery/{galleryPhoto}', [GalleryController::class, 'destroy'])->name('gallery.destroy');
         Route::get('site-settings/edit', [SiteSettingController::class, 'edit'])->name('site-settings.edit');
         Route::put('site-settings', [SiteSettingController::class, 'update'])->name('site-settings.update');
         Route::get('site-settings-nl/edit', [SiteSettingNLController::class, 'edit'])->name('site-settings-nl.edit');

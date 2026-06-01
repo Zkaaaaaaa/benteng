@@ -79,7 +79,7 @@
                             <input type="file" class="btg-input" id="logo" name="logo" accept="image/*">
                             @if ($siteSetting->logo)
                                 <div style="margin-top: 8px; display: flex; align-items: center; gap: 10px;">
-                                    <img src="{{ asset($siteSetting->logo) }}" alt="Logo Current"
+                                    <img src="{{ stored_asset($siteSetting->logo) }}" alt="Logo Current"
                                         style="max-height: 40px; border-radius: 6px; border: 1px solid var(--btg-border);">
                                     <span style="font-size: 11px; color: var(--btg-muted);">File saat ini:
                                         {{ basename($siteSetting->logo) }}</span>
@@ -125,7 +125,7 @@
                                 <input type="file" class="btg-input" id="img1" name="img1" accept="image/*">
                                 @if ($siteSetting->img1)
                                     <div style="margin-top: 8px; display: flex; align-items: center; gap: 10px;">
-                                        <img src="{{ asset($siteSetting->img1) }}" alt="Hero 1 Current"
+                                        <img src="{{ stored_asset($siteSetting->img1) }}" alt="Hero 1 Current"
                                             style="max-height: 50px; border-radius: 6px; border: 1px solid var(--btg-border);">
                                         <span style="font-size: 11px; color: var(--btg-muted);">File saat ini:
                                             {{ basename($siteSetting->img1) }}</span>
@@ -160,7 +160,7 @@
                                 <input type="file" class="btg-input" id="img2" name="img2" accept="image/*">
                                 @if ($siteSetting->img2)
                                     <div style="margin-top: 8px; display: flex; align-items: center; gap: 10px;">
-                                        <img src="{{ asset($siteSetting->img2) }}" alt="Hero 2 Current"
+                                        <img src="{{ stored_asset($siteSetting->img2) }}" alt="Hero 2 Current"
                                             style="max-height: 50px; border-radius: 6px; border: 1px solid var(--btg-border);">
                                         <span style="font-size: 11px; color: var(--btg-muted);">File saat ini:
                                             {{ basename($siteSetting->img2) }}</span>
@@ -240,7 +240,7 @@
                                     accept="image/*">
                                 @if ($siteSetting->img_store1)
                                     <div style="margin-top: 8px; display: flex; align-items: center; gap: 10px;">
-                                        <img src="{{ asset($siteSetting->img_store1) }}" alt="Toko 1 Current"
+                                        <img src="{{ stored_asset($siteSetting->img_store1) }}" alt="Toko 1 Current"
                                             style="max-height: 50px; border-radius: 6px; border: 1px solid var(--btg-border);">
                                         <span style="font-size: 11px; color: var(--btg-muted);">File saat ini:
                                             {{ basename($siteSetting->img_store1) }}</span>
@@ -311,7 +311,7 @@
                                     accept="image/*">
                                 @if ($siteSetting->img_store2)
                                     <div style="margin-top: 8px; display: flex; align-items: center; gap: 10px;">
-                                        <img src="{{ asset($siteSetting->img_store2) }}" alt="Toko 2 Current"
+                                        <img src="{{ stored_asset($siteSetting->img_store2) }}" alt="Toko 2 Current"
                                             style="max-height: 50px; border-radius: 6px; border: 1px solid var(--btg-border);">
                                         <span style="font-size: 11px; color: var(--btg-muted);">File saat ini:
                                             {{ basename($siteSetting->img_store2) }}</span>

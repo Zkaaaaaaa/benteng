@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Product;
+use App\Support\PublicStorage;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
@@ -45,7 +45,7 @@ class ProductController extends Controller
         // Unggah gambar produk jika ada file yang dikirim
         $imagePath = null;
         if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('products', 'public');
+            $imagePath = PublicStorage::store($request->file('image'), 'products');
         }
 
         $category = Category::findOrFail($request->category_id);
@@ -85,10 +85,8 @@ class ProductController extends Controller
 
         // Ganti gambar lama jika admin mengunggah file baru
         if ($request->hasFile('image')) {
-            if ($product->image) {
-                Storage::disk('public')->delete($product->image);
-            }
-            $imagePath = $request->file('image')->store('products', 'public');
+            PublicStorage::delete($product->image);
+            $imagePath = PublicStorage::store($request->file('image'), 'products');
         } else {
             $imagePath = $product->image;
         }
@@ -112,10 +110,6 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
-        if ($product->image) {
-            Storage::disk('public')->delete($product->image);
-        }
-
         $product->delete();
 
         return back()->with('success', 'Produk berhasil dihapus!');

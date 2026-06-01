@@ -2,11 +2,15 @@
 
 namespace App\Models;
 
+use App\Support\PublicStorage;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @method bool|null delete()
+ */
 class Product extends Model
 {
     use HasFactory;
@@ -40,6 +44,13 @@ class Product extends Model
         ];
     }
 
+    protected static function booted(): void
+    {
+        static::deleting(function (Product $product) {
+            PublicStorage::delete($product->image);
+        });
+    }
+
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
@@ -67,17 +78,7 @@ class Product extends Model
 
     public function getImageUrlAttribute(): ?string
     {
-        if (! $this->image) {
-            return null;
-        }
-
-        if (str_starts_with($this->image, 'http://')
-            || str_starts_with($this->image, 'https://')
-            || str_starts_with($this->image, 'assets/')) {
-            return asset($this->image);
-        }
-
-        return asset('storage/' . $this->image);
+        return PublicStorage::url($this->image);
     }
 
     public function getFormattedPriceAttribute(): string

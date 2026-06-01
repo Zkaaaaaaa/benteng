@@ -4,21 +4,21 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\SiteSettingNL;
+use App\Support\PublicStorage;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 class SiteSettingNLController extends Controller
 {
     public function edit()
     {
-        $siteSetting = SiteSettingNL::firstOrFail();
+        $siteSetting = SiteSettingNL::query()->firstOrFail();
 
         return view('admin.site-setting-nl.edit', compact('siteSetting'));
     }
 
     public function update(Request $request)
     {
-        $siteSetting = SiteSettingNL::firstOrFail();
+        $siteSetting = SiteSettingNL::query()->firstOrFail();
 
         $validated = $request->validate([
             'title1' => 'required|string|max:255',
@@ -50,18 +50,10 @@ class SiteSettingNLController extends Controller
             'img_store2' => 'nullable|image|mimes:jpeg,png,jpg,webp,svg|max:2048',
         ]);
 
-        $imageFields = ['logo', 'img1', 'img2', 'img_store1', 'img_store2'];
-        foreach ($imageFields as $field) {
+        foreach (['logo', 'img1', 'img2', 'img_store1', 'img_store2'] as $field) {
             if ($request->hasFile($field)) {
-                if ($siteSetting->$field && str_starts_with($siteSetting->$field, 'storage/')) {
-                    $oldPath = str_replace('storage/', '', $siteSetting->$field);
-                    if (Storage::disk('public')->exists($oldPath)) {
-                        Storage::disk('public')->delete($oldPath);
-                    }
-                }
-
-                $path = $request->file($field)->store('settings', 'public');
-                $validated[$field] = 'storage/'.$path;
+                PublicStorage::delete($siteSetting->$field);
+                $validated[$field] = PublicStorage::store($request->file($field), 'settings');
             } else {
                 $validated[$field] = $siteSetting->$field;
             }

@@ -474,7 +474,7 @@
                             <tr>
                                 <td>
                                     @if ($product->image)
-                                        <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}"
+                                        <img src="{{ $product->image_url }}" alt="{{ $product->name }}"
                                             class="prod-thumb">
                                     @else
                                         <div class="prod-thumb-placeholder">

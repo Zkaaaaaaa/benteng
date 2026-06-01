@@ -4,7 +4,8 @@
     <link rel="stylesheet" href="{{ asset('assets/css/gallery.css') }}">
 @endpush
 
-<section class="food-gallery" id="gallery" data-food-gallery aria-label="{{ $galleryHeading ?? 'Gallery' }}">
+<section class="food-gallery" id="gallery" data-food-gallery
+    data-gallery-photos="{{ json_encode($galleryPhotos ?? []) }}" aria-label="{{ $galleryHeading ?? 'Gallery' }}">
     <div class="food-gallery__container">
         <header class="food-gallery__header">
             <h2 class="food-gallery__title section-title section-title--center">{{ $galleryHeading ?? 'Gallery' }}</h2>
@@ -38,6 +39,5 @@
 </section>
 
 @push('scripts')
-    <script src="{{ asset('assets/js/gallery-storage.js') }}" defer></script>
     <script src="{{ asset('assets/js/gallery-carousel.js') }}" defer></script>
 @endpush

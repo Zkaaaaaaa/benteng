@@ -77,7 +77,7 @@
                         <td><span class="row-num">{{ $index + 1 }}</span></td>
                         <td>
                             @if ($product->image)
-                                <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}"
+                                <img src="{{ $product->image_url }}" alt="{{ $product->name }}"
                                     style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px; border: 1px solid var(--btg-border);">
                             @else
                                 <img src="{{ asset('dist/img/boxed-bg.jpg') }}" alt="Placeholder"
@@ -110,7 +110,7 @@
                         <td>
                             <div class="action-group" style="justify-content:flex-end;">
                                 <button class="btn-action edit"
-                                    onclick="openEdit('{{ $product->id }}', '{{ addslashes($product->name) }}', '{{ $product->category_id }}', '{{ $product->price }}', @js($product->description_en), @js($product->description_nl), '{{ $product->image ? asset('storage/' . $product->image) : '' }}')">
+                                    onclick="openEdit('{{ $product->id }}', '{{ addslashes($product->name) }}', '{{ $product->category_id }}', '{{ $product->price }}', @js($product->description_en), @js($product->description_nl), '{{ $product->image ? $product->image_url : '' }}')">
                                     <i class="fas fa-pen"></i> Edit
                                 </button>
                                 <button class="btn-action delete"

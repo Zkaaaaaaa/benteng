@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use App\Models\GalleryPhoto;
 use App\Models\RamesSetting;
 use App\Models\SiteSetting;
 use App\Models\SiteSettingNL;
@@ -20,7 +21,9 @@ class HomeController extends Controller
         $ramesSetting = RamesSetting::query()->first(['*']);
         $site = SiteSettingNL::query()->first(['*']);
 
-        return view('client.index-nl', compact('categories', 'homeCategories', 'site', 'ramesMenu', 'ramesSetting'));
+        $galleryPhotos = $this->galleryPhotosForCarousel();
+
+        return view('client.index-nl', compact('categories', 'homeCategories', 'site', 'ramesMenu', 'ramesSetting', 'galleryPhotos'));
     }
 
     public function index()
@@ -32,7 +35,9 @@ class HomeController extends Controller
         $ramesSetting = RamesSetting::query()->first(['*']);
         $site = SiteSetting::query()->first(['*']);
 
-        return view('client.index', compact('categories', 'homeCategories', 'site', 'ramesMenu', 'ramesSetting'));
+        $galleryPhotos = $this->galleryPhotosForCarousel();
+
+        return view('client.index', compact('categories', 'homeCategories', 'site', 'ramesMenu', 'ramesSetting', 'galleryPhotos'));
     }
 
     public function contact()
@@ -46,5 +51,19 @@ class HomeController extends Controller
             ->with(['products' => fn ($q) => $q->active()->ordered()])
             ->ordered()
             ->get();
+    }
+
+    private function galleryPhotosForCarousel()
+    {
+        return GalleryPhoto::query()
+            ->latest()
+            ->get()
+            ->map(fn (GalleryPhoto $photo) => [
+                'id' => $photo->id,
+                'name' => $photo->name,
+                'imageUrl' => $photo->image_url,
+                'uploadedAt' => $photo->created_at?->toIso8601String(),
+            ])
+            ->values();
     }
 }

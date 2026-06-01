@@ -1,13 +1,9 @@
 @extends('layouts.auth-login')
 
 @section('content')
-    @php
-        $logoPath = $logo ?? 'assets/images/logo.png';
-    @endphp
-
     <div class="admin-login-card">
         <div class="admin-login-brand">
-            <img src="{{ asset($logoPath) }}" alt="Benteng" class="admin-login-logo">
+            <img src="{{ stored_asset($logo ?? 'assets/images/logo.png') }}" alt="Benteng" class="admin-login-logo">
             <p class="admin-login-heading">Admin Panel</p>
         </div>
 

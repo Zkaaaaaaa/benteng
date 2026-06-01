@@ -3,7 +3,7 @@
  */
 (function () {
     const section = document.querySelector('[data-food-gallery]');
-    if (!section || !window.BentengGalleryStorage) {
+    if (!section) {
         return;
     }
 
@@ -50,8 +50,30 @@
         section.style.setProperty('--gallery-gap', gap + 'px');
     }
 
+    function loadItems() {
+        const raw = section.getAttribute('data-gallery-photos');
+        if (!raw) {
+            return [];
+        }
+        try {
+            const parsed = JSON.parse(raw);
+            if (!Array.isArray(parsed)) {
+                return [];
+            }
+            return parsed.map(function (item) {
+                return {
+                    name: item.name,
+                    base64Image: item.imageUrl,
+                    uploadedAt: item.uploadedAt,
+                };
+            });
+        } catch (e) {
+            return [];
+        }
+    }
+
     function render() {
-        items = BentengGalleryStorage.getAll();
+        items = loadItems();
         track.innerHTML = '';
 
         if (items.length === 0) {
@@ -263,13 +285,6 @@
     window.addEventListener('resize', function () {
         measure();
         goTo(index, false);
-    });
-
-    window.addEventListener('benteng-gallery-updated', render);
-    window.addEventListener('storage', function (e) {
-        if (e.key === BentengGalleryStorage.STORAGE_KEY) {
-            render();
-        }
     });
 
     const observer = new IntersectionObserver(

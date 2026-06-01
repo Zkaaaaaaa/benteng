@@ -10,7 +10,7 @@
     <div class="navbar__container">
         <a href="{{ $isHome ? '#hero' : $homeUrl . '#hero' }}" class="navbar__logo">
             @if(!empty($site?->logo))
-                <img src="{{ asset($site->logo) }}" alt="Benteng Indonesische Delicatessen">
+                <img src="{{ stored_asset($site->logo) }}" alt="Benteng Indonesische Delicatessen">
             @endif
         </a>
 

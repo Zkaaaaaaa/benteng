@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\PublicStorage;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -48,18 +49,15 @@ class Category extends Model
         return $query->where('show_on_home', true);
     }
 
+    protected static function booted(): void
+    {
+        static::deleting(function (Category $category) {
+            PublicStorage::delete($category->image);
+        });
+    }
+
     public function getImageUrlAttribute(): ?string
     {
-        if (! $this->image) {
-            return null;
-        }
-
-        if (str_starts_with($this->image, 'http://')
-            || str_starts_with($this->image, 'https://')
-            || str_starts_with($this->image, 'assets/')) {
-            return asset($this->image);
-        }
-
-        return asset('storage/' . $this->image);
+        return PublicStorage::url($this->image);
     }
 }
