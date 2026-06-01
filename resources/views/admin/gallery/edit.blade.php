@@ -1,7 +1,7 @@
 @extends('layouts.admin.app')
 
 @push('styles')
-    <link rel="stylesheet" href="{{ asset('assets/css/gallery.css') }}">
+    <link rel="stylesheet" href="{{ asset_version('assets/css/gallery.css') }}">
 @endpush
 
 @section('title', 'Kelola Galeri')

@@ -11,7 +11,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
+    <link rel="stylesheet" href="{{ asset_version('assets/css/style.css') }}">
     @stack('styles')
 </head>
 
@@ -23,7 +23,7 @@
         @yield('content')
     </main>
 
-    <script src="{{ asset('assets/js/client.js') }}" defer></script>
+    <script src="{{ asset_version('assets/js/client.js') }}" defer></script>
     @stack('scripts')
 </body>
 

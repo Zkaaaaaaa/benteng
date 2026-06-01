@@ -1,324 +1,397 @@
 /**
- * Carousel galeri foto — vanilla JS, tanpa library eksternal.
+ * Carousel galeri foto + modal lightbox — vanilla JS.
  */
 (function () {
-    const section = document.querySelector('[data-food-gallery]');
-    if (!section) {
-        return;
-    }
-
-    section.classList.add('is-visible');
-
-    const track = section.querySelector('[data-gallery-track]');
-    const viewport = section.querySelector('[data-gallery-viewport]');
-    const prevBtn = section.querySelector('[data-gallery-prev]');
-    const nextBtn = section.querySelector('[data-gallery-next]');
-    const emptyEl = section.querySelector('[data-gallery-empty]');
-    const lightbox = section.querySelector('[data-gallery-lightbox]');
-    const lightboxImg = section.querySelector('[data-gallery-lightbox-img]');
-    const lightboxCaption = section.querySelector('[data-gallery-lightbox-caption]');
-
-    let items = [];
-    let suppressLightboxClick = false;
-    let index = 0;
-    let perView = 3;
-    let gap = 20;
-    let cardWidth = 380;
-    let autoplayTimer = null;
-    let isPaused = false;
-    let isDragging = false;
-    let dragStartX = 0;
-    let dragDelta = 0;
-    let transitionEnabled = true;
-
-    function getPerView() {
-        if (window.innerWidth < 640) {
-            return 1;
-        }
-        if (window.innerWidth < 1024) {
-            return 2;
-        }
-        return 3;
-    }
-
-    function measure() {
-        perView = getPerView();
-        const viewportWidth = viewport.clientWidth;
-        gap = perView === 1 ? 16 : 20;
-        cardWidth = Math.floor((viewportWidth - gap * (perView - 1)) / perView);
-        cardWidth = Math.min(380, Math.max(260, cardWidth));
-        section.style.setProperty('--gallery-card-w', cardWidth + 'px');
-        section.style.setProperty('--gallery-card-h', '280px');
-        section.style.setProperty('--gallery-gap', gap + 'px');
-    }
-
-    function loadItemsFromDom() {
-        if (!track) {
-            return [];
+    function initGallery() {
+        const section = document.querySelector('[data-food-gallery]');
+        if (!section) {
+            return;
         }
 
-        return Array.from(track.querySelectorAll('.food-gallery__card')).map(function (card) {
-            const img = card.querySelector('img');
-            return {
-                name: img ? img.alt : '',
-                imageUrl: img ? img.src : '',
-            };
-        });
-    }
+        section.classList.add('is-visible');
 
-    function bindCardClicks() {
-        track.querySelectorAll('.food-gallery__card').forEach(function (card, cardIndex) {
-            card.addEventListener('click', function () {
-                if (suppressLightboxClick) {
-                    return;
-                }
-                const item = items[cardIndex];
-                if (item) {
-                    openLightbox(item);
-                }
+        const track = section.querySelector('[data-gallery-track]');
+        const viewport = section.querySelector('[data-gallery-viewport]');
+        const prevBtn = section.querySelector('[data-gallery-prev]');
+        const nextBtn = section.querySelector('[data-gallery-next]');
+        const lightbox = section.querySelector('[data-gallery-lightbox]');
+        const lightboxImg = section.querySelector('[data-gallery-lightbox-img]');
+        const lightboxCaption = section.querySelector('[data-gallery-lightbox-caption]');
+        const lightboxPrev = section.querySelector('[data-gallery-lightbox-prev]');
+        const lightboxNext = section.querySelector('[data-gallery-lightbox-next]');
+
+        let items = [];
+        let index = 0;
+        let modalIndex = 0;
+        let perView = 3;
+        let gap = 20;
+        let cardWidth = 380;
+        let maxIndex = 0;
+        let autoplayTimer = null;
+        let isPaused = false;
+        let isDragging = false;
+        let dragStartX = 0;
+        let dragDelta = 0;
+        let suppressClick = false;
+
+        function getPerView() {
+            if (window.innerWidth < 640) {
+                return 1;
+            }
+            if (window.innerWidth < 1024) {
+                return 2;
+            }
+            return 3;
+        }
+
+        function loadItemsFromDom() {
+            if (!track) {
+                return [];
+            }
+
+            return Array.from(track.querySelectorAll('.food-gallery__card')).map(function (card) {
+                const img = card.querySelector('img');
+                return {
+                    name: img ? img.alt : '',
+                    imageUrl: img ? img.currentSrc || img.src : '',
+                };
             });
-        });
-    }
+        }
 
-    function render() {
-        items = loadItemsFromDom();
+        function updateBounds() {
+            maxIndex = Math.max(0, items.length - perView);
+            if (index > maxIndex) {
+                index = maxIndex;
+            }
+        }
 
-        if (items.length === 0) {
-            if (emptyEl) {
-                emptyEl.hidden = false;
+        function measure() {
+            if (!viewport) {
+                return;
             }
-            if (viewport) {
-                viewport.hidden = true;
+
+            perView = getPerView();
+            const viewportWidth = viewport.clientWidth || viewport.offsetWidth;
+            gap = perView === 1 ? 16 : 20;
+            cardWidth = Math.floor((viewportWidth - gap * (perView - 1)) / perView);
+            cardWidth = Math.min(380, Math.max(220, cardWidth));
+            section.style.setProperty('--gallery-card-w', cardWidth + 'px');
+            section.style.setProperty('--gallery-card-h', '280px');
+            section.style.setProperty('--gallery-gap', gap + 'px');
+            updateBounds();
+        }
+
+        function offsetForIndex(i) {
+            return -(i * (cardWidth + gap));
+        }
+
+        function goTo(i, animate) {
+            if (!track || items.length === 0) {
+                return;
             }
+
+            if (items.length <= perView) {
+                index = 0;
+                track.style.transition = 'none';
+                track.style.transform = 'translateX(0)';
+                updateNavButtons();
+                return;
+            }
+
+            if (i < 0) {
+                i = maxIndex;
+            }
+            if (i > maxIndex) {
+                i = 0;
+            }
+
+            index = i;
+            track.style.transition = animate ? 'transform 400ms ease-in-out' : 'none';
+            track.style.transform = 'translateX(' + offsetForIndex(index) + 'px)';
+            updateNavButtons();
+        }
+
+        function updateNavButtons() {
+            const canScroll = items.length > perView;
             if (prevBtn) {
-                prevBtn.disabled = true;
+                prevBtn.disabled = !canScroll;
             }
             if (nextBtn) {
-                nextBtn.disabled = true;
+                nextBtn.disabled = !canScroll;
             }
-            return;
         }
 
-        if (emptyEl) {
-            emptyEl.hidden = true;
-        }
-        if (viewport) {
-            viewport.hidden = false;
-        }
-        if (prevBtn) {
-            prevBtn.disabled = false;
-        }
-        if (nextBtn) {
-            nextBtn.disabled = false;
+        function next() {
+            goTo(index >= maxIndex ? 0 : index + 1, true);
         }
 
-        bindCardClicks();
-
-        index = Math.min(index, Math.max(0, items.length - 1));
-        goTo(index, false);
-    }
-
-    function escapeHtml(text) {
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
-    }
-
-    function openLightbox(item) {
-        if (!lightbox || !lightboxImg) {
-            return;
-        }
-        lightboxImg.src = item.imageUrl;
-        lightboxImg.alt = item.name;
-        lightboxCaption.textContent = item.name;
-        lightbox.hidden = false;
-        lightbox.setAttribute('aria-hidden', 'false');
-        document.body.style.overflow = 'hidden';
-    }
-
-    function closeLightbox() {
-        if (!lightbox) {
-            return;
-        }
-        lightbox.hidden = true;
-        lightbox.setAttribute('aria-hidden', 'true');
-        lightboxImg.removeAttribute('src');
-        document.body.style.overflow = '';
-    }
-
-    section.querySelectorAll('[data-gallery-lightbox-close]').forEach(function (el) {
-        el.addEventListener('click', closeLightbox);
-    });
-
-    document.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape' && lightbox && !lightbox.hidden) {
-            closeLightbox();
-        }
-    });
-
-    function offsetForIndex(i) {
-        return -(i * (cardWidth + gap));
-    }
-
-    function goTo(i, animate) {
-        if (items.length === 0) {
-            return;
+        function prev() {
+            goTo(index <= 0 ? maxIndex : index - 1, true);
         }
 
-        if (i < 0) {
-            i = items.length - 1;
+        function openLightbox(itemIndex) {
+            if (!lightbox || !lightboxImg || !items.length) {
+                return;
+            }
+
+            modalIndex = itemIndex;
+            if (modalIndex < 0) {
+                modalIndex = 0;
+            }
+            if (modalIndex >= items.length) {
+                modalIndex = items.length - 1;
+            }
+
+            const item = items[modalIndex];
+            lightboxImg.src = item.imageUrl;
+            lightboxImg.alt = item.name;
+            if (lightboxCaption) {
+                lightboxCaption.textContent = item.name;
+            }
+
+            lightbox.hidden = false;
+            lightbox.setAttribute('aria-hidden', 'false');
+            document.body.classList.add('gallery-modal-open');
+            document.body.style.overflow = 'hidden';
+
+            const showNav = items.length > 1;
+            if (lightboxPrev) {
+                lightboxPrev.hidden = !showNav;
+            }
+            if (lightboxNext) {
+                lightboxNext.hidden = !showNav;
+            }
         }
-        if (i >= items.length) {
-            i = 0;
+
+        function closeLightbox() {
+            if (!lightbox) {
+                return;
+            }
+
+            lightbox.hidden = true;
+            lightbox.setAttribute('aria-hidden', 'true');
+            document.body.classList.remove('gallery-modal-open');
+            document.body.style.overflow = '';
+
+            if (lightboxImg) {
+                lightboxImg.removeAttribute('src');
+            }
         }
 
-        index = i;
-        transitionEnabled = animate;
-        track.style.transition = animate ? 'transform 400ms ease-in-out' : 'none';
-        track.style.transform = 'translateX(' + offsetForIndex(index) + 'px)';
-    }
+        function modalPrev() {
+            if (!items.length) {
+                return;
+            }
+            modalIndex = modalIndex <= 0 ? items.length - 1 : modalIndex - 1;
+            openLightbox(modalIndex);
+        }
 
-    function next() {
-        goTo(index + 1, true);
-    }
+        function modalNext() {
+            if (!items.length) {
+                return;
+            }
+            modalIndex = modalIndex >= items.length - 1 ? 0 : modalIndex + 1;
+            openLightbox(modalIndex);
+        }
 
-    function prev() {
-        goTo(index - 1, true);
-    }
+        function startAutoplay() {
+            stopAutoplay();
+            if (items.length <= perView) {
+                return;
+            }
+            autoplayTimer = setInterval(function () {
+                if (!isPaused && !isDragging) {
+                    next();
+                }
+            }, 4500);
+        }
 
-    function startAutoplay() {
-        stopAutoplay();
-        autoplayTimer = setInterval(function () {
-            if (!isPaused && !isDragging && items.length > 1) {
+        function stopAutoplay() {
+            if (autoplayTimer) {
+                clearInterval(autoplayTimer);
+                autoplayTimer = null;
+            }
+        }
+
+        function snapAfterDrag() {
+            const threshold = Math.min(60, cardWidth * 0.2);
+            if (dragDelta < -threshold) {
                 next();
+            } else if (dragDelta > threshold) {
+                prev();
+            } else {
+                goTo(index, true);
             }
-        }, 4000);
-    }
-
-    function stopAutoplay() {
-        if (autoplayTimer) {
-            clearInterval(autoplayTimer);
-            autoplayTimer = null;
+            dragDelta = 0;
         }
-    }
 
-    function snapAfterDrag() {
-        const threshold = cardWidth * 0.25;
-        if (dragDelta < -threshold) {
-            next();
-        } else if (dragDelta > threshold) {
-            prev();
-        } else {
-            goTo(index, true);
+        function onPointerDown(clientX) {
+            if (items.length <= perView) {
+                return;
+            }
+            isDragging = true;
+            isPaused = true;
+            dragStartX = clientX;
+            dragDelta = 0;
+            if (track) {
+                track.style.transition = 'none';
+            }
         }
-        dragDelta = 0;
-    }
 
-    function onPointerDown(clientX) {
-        if (items.length <= 1) {
-            return;
+        function onPointerMove(clientX) {
+            if (!isDragging || !track) {
+                return;
+            }
+            dragDelta = clientX - dragStartX;
+            track.style.transform = 'translateX(' + (offsetForIndex(index) + dragDelta) + 'px)';
         }
-        isDragging = true;
-        isPaused = true;
-        dragStartX = clientX;
-        dragDelta = 0;
-        track.style.transition = 'none';
-    }
 
-    function onPointerMove(clientX) {
-        if (!isDragging) {
-            return;
-        }
-        dragDelta = clientX - dragStartX;
-        track.style.transform = 'translateX(' + (offsetForIndex(index) + dragDelta) + 'px)';
-    }
+        function onPointerUp() {
+            if (!isDragging) {
+                return;
+            }
 
-    function onPointerUp() {
-        if (!isDragging) {
-            return;
-        }
-        if (Math.abs(dragDelta) > 8) {
-            suppressLightboxClick = true;
-            setTimeout(function () {
-                suppressLightboxClick = false;
-            }, 320);
-        }
-        isDragging = false;
-        isPaused = false;
-        snapAfterDrag();
-    }
+            if (Math.abs(dragDelta) > 10) {
+                suppressClick = true;
+                setTimeout(function () {
+                    suppressClick = false;
+                }, 300);
+            }
 
-    if (!track || !viewport || !prevBtn || !nextBtn) {
-        const observer = new IntersectionObserver(
-            function (entries) {
-                entries.forEach(function (entry) {
-                    if (entry.isIntersecting) {
-                        section.classList.add('is-visible');
-                        observer.disconnect();
-                    }
-                });
-            },
-            { threshold: 0.05, rootMargin: '0px 0px -5% 0px' }
-        );
-        observer.observe(section);
-        return;
-    }
-
-    prevBtn.addEventListener('click', function () {
-        prev();
-        startAutoplay();
-    });
-
-    nextBtn.addEventListener('click', function () {
-        next();
-        startAutoplay();
-    });
-
-    viewport.addEventListener('mouseenter', function () {
-        isPaused = true;
-    });
-    viewport.addEventListener('mouseleave', function () {
-        if (!isDragging) {
+            isDragging = false;
             isPaused = false;
+            snapAfterDrag();
         }
-    });
 
-    viewport.addEventListener('mousedown', function (e) {
-        e.preventDefault();
-        onPointerDown(e.clientX);
-    });
-    window.addEventListener('mousemove', function (e) {
-        onPointerMove(e.clientX);
-    });
-    window.addEventListener('mouseup', onPointerUp);
+        function setup() {
+            items = loadItemsFromDom();
+            if (!track || !viewport || !prevBtn || !nextBtn || items.length === 0) {
+                return;
+            }
 
-    viewport.addEventListener('touchstart', function (e) {
-        onPointerDown(e.touches[0].clientX);
-    }, { passive: true });
-    viewport.addEventListener('touchmove', function (e) {
-        onPointerMove(e.touches[0].clientX);
-    }, { passive: true });
-    viewport.addEventListener('touchend', onPointerUp);
+            measure();
+            goTo(0, false);
 
-    window.addEventListener('resize', function () {
-        measure();
-        goTo(index, false);
-    });
+            prevBtn.addEventListener('click', function (e) {
+                e.stopPropagation();
+                prev();
+                startAutoplay();
+            });
 
-    const observer = new IntersectionObserver(
-        function (entries) {
-            entries.forEach(function (entry) {
-                if (entry.isIntersecting) {
-                    section.classList.add('is-visible');
-                    observer.disconnect();
+            nextBtn.addEventListener('click', function (e) {
+                e.stopPropagation();
+                next();
+                startAutoplay();
+            });
+
+            function openCardModal(card) {
+                const cards = Array.from(track.querySelectorAll('.food-gallery__card'));
+                const cardIndex = cards.indexOf(card);
+                if (cardIndex >= 0) {
+                    openLightbox(cardIndex);
+                }
+            }
+
+            track.addEventListener('click', function (e) {
+                if (suppressClick) {
+                    return;
+                }
+
+                const card = e.target.closest('.food-gallery__card');
+                if (card) {
+                    openCardModal(card);
                 }
             });
-        },
-        { threshold: 0.05, rootMargin: '0px 0px -5% 0px' }
-    );
-    observer.observe(section);
 
-    measure();
-    render();
-    startAutoplay();
+            track.addEventListener('keydown', function (e) {
+                if (e.key !== 'Enter' && e.key !== ' ') {
+                    return;
+                }
+                const card = e.target.closest('.food-gallery__card');
+                if (!card) {
+                    return;
+                }
+                e.preventDefault();
+                openCardModal(card);
+            });
+
+            viewport.addEventListener('mouseenter', function () {
+                isPaused = true;
+            });
+            viewport.addEventListener('mouseleave', function () {
+                if (!isDragging) {
+                    isPaused = false;
+                }
+            });
+
+            viewport.addEventListener('mousedown', function (e) {
+                if (e.button !== 0) {
+                    return;
+                }
+                onPointerDown(e.clientX);
+            });
+
+            window.addEventListener('mousemove', function (e) {
+                onPointerMove(e.clientX);
+            });
+            window.addEventListener('mouseup', onPointerUp);
+
+            viewport.addEventListener('touchstart', function (e) {
+                onPointerDown(e.touches[0].clientX);
+            }, { passive: true });
+            viewport.addEventListener('touchmove', function (e) {
+                onPointerMove(e.touches[0].clientX);
+            }, { passive: true });
+            viewport.addEventListener('touchend', onPointerUp);
+
+            window.addEventListener('resize', function () {
+                measure();
+                goTo(index, false);
+            });
+
+            startAutoplay();
+        }
+
+        section.querySelectorAll('[data-gallery-lightbox-close]').forEach(function (el) {
+            el.addEventListener('click', closeLightbox);
+        });
+
+        if (lightboxPrev) {
+            lightboxPrev.addEventListener('click', function (e) {
+                e.stopPropagation();
+                modalPrev();
+            });
+        }
+
+        if (lightboxNext) {
+            lightboxNext.addEventListener('click', function (e) {
+                e.stopPropagation();
+                modalNext();
+            });
+        }
+
+        document.addEventListener('keydown', function (e) {
+            if (!lightbox || lightbox.hidden) {
+                return;
+            }
+
+            if (e.key === 'Escape') {
+                closeLightbox();
+            } else if (e.key === 'ArrowLeft') {
+                modalPrev();
+            } else if (e.key === 'ArrowRight') {
+                modalNext();
+            }
+        });
+
+        requestAnimationFrame(function () {
+            requestAnimationFrame(setup);
+        });
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initGallery);
+    } else {
+        initGallery();
+    }
 })();
