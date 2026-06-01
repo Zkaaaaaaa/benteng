@@ -7,6 +7,8 @@
         return;
     }
 
+    section.classList.add('is-visible');
+
     const track = section.querySelector('[data-gallery-track]');
     const viewport = section.querySelector('[data-gallery-viewport]');
     const prevBtn = section.querySelector('[data-gallery-prev]');
@@ -256,7 +258,7 @@
                     }
                 });
             },
-            { threshold: 0.15 }
+            { threshold: 0.05, rootMargin: '0px 0px -5% 0px' }
         );
         observer.observe(section);
         return;
@@ -312,7 +314,7 @@
                 }
             });
         },
-        { threshold: 0.15 }
+        { threshold: 0.05, rootMargin: '0px 0px -5% 0px' }
     );
     observer.observe(section);
 
