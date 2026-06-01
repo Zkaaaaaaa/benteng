@@ -8,18 +8,12 @@ use App\Models\RamesSetting;
 use App\Models\SiteSetting;
 use App\Models\SiteSettingNL;
 use App\Support\RamesMenu;
-use Illuminate\Support\Facades\Cache;
 
 class HomeController extends Controller
 {
     public function indexNL()
     {
-        $categories = Cache::remember('client.menu.categories.nl', now()->addMinutes(5), function () {
-            return Category::query()
-                ->with(['products' => fn ($q) => $q->active()->ordered()])
-                ->ordered()
-                ->get();
-        });
+        $categories = $this->menuCategories();
 
         $ramesMenu = RamesMenu::forHomepage();
         $homeCategories = $categories->where('show_on_home', true);
@@ -31,12 +25,7 @@ class HomeController extends Controller
 
     public function index()
     {
-        $categories = Cache::remember('client.menu.categories.en', now()->addMinutes(5), function () {
-            return Category::query()
-                ->with(['products' => fn ($q) => $q->active()->ordered()])
-                ->ordered()
-                ->get();
-        });
+        $categories = $this->menuCategories();
 
         $ramesMenu = RamesMenu::forHomepage();
         $homeCategories = $categories->where('show_on_home', true);
@@ -49,5 +38,13 @@ class HomeController extends Controller
     public function contact()
     {
         return view('client.contact');
+    }
+
+    private function menuCategories()
+    {
+        return Category::query()
+            ->with(['products' => fn ($q) => $q->active()->ordered()])
+            ->ordered()
+            ->get();
     }
 }

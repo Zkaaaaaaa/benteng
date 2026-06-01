@@ -8,7 +8,6 @@ use App\Models\RamesItem;
 use App\Models\RamesSetting;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\View\View;
 
 class RamesController extends Controller
@@ -120,8 +119,6 @@ class RamesController extends Controller
         $setting = RamesSetting::query()->firstOrCreate([]);
         $setting->update($data);
 
-        $this->clearMenuCache();
-
         return redirect()
             ->route('admin.rames.edit')
             ->with('success', 'Teks bagian Rames berhasil disimpan.');
@@ -154,8 +151,6 @@ class RamesController extends Controller
             'subsection' => $config['subsection'],
         ]);
 
-        $this->clearMenuCache();
-
         return redirect()
             ->route('admin.rames.edit')
             ->with('success', "{$product->name} ditambahkan ke {$this->sectionLabel($request->input('section_key'))}.");
@@ -165,8 +160,6 @@ class RamesController extends Controller
     {
         $name = $ramesItem->product?->name ?? 'Produk';
         $ramesItem->delete();
-
-        $this->clearMenuCache();
 
         return redirect()
             ->route('admin.rames.edit')
@@ -183,11 +176,5 @@ class RamesController extends Controller
             'groenten' => 'DE GROENTEN',
             default => 'menu Rames',
         };
-    }
-
-    private function clearMenuCache(): void
-    {
-        Cache::forget('client.menu.categories.nl');
-        Cache::forget('client.menu.categories.en');
     }
 }
