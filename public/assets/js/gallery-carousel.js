@@ -50,56 +50,21 @@
         section.style.setProperty('--gallery-gap', gap + 'px');
     }
 
-    function loadItems() {
-        const raw = section.getAttribute('data-gallery-photos');
-        if (!raw) {
+    function loadItemsFromDom() {
+        if (!track) {
             return [];
         }
-        try {
-            const parsed = JSON.parse(raw);
-            if (!Array.isArray(parsed)) {
-                return [];
-            }
-            return parsed.map(function (item) {
-                return {
-                    name: item.name,
-                    base64Image: item.imageUrl,
-                    uploadedAt: item.uploadedAt,
-                };
-            });
-        } catch (e) {
-            return [];
-        }
+
+        return Array.from(track.querySelectorAll('.food-gallery__card')).map(function (card) {
+            const img = card.querySelector('img');
+            return {
+                name: img ? img.alt : '',
+                imageUrl: img ? img.src : '',
+            };
+        });
     }
 
-    function render() {
-        items = loadItems();
-        track.innerHTML = '';
-
-        if (items.length === 0) {
-            emptyEl.hidden = false;
-            viewport.hidden = true;
-            prevBtn.disabled = true;
-            nextBtn.disabled = true;
-            return;
-        }
-
-        emptyEl.hidden = true;
-        viewport.hidden = false;
-        prevBtn.disabled = false;
-        nextBtn.disabled = false;
-
-        items.forEach((item) => {
-            const slide = document.createElement('article');
-            slide.className = 'food-gallery__card';
-            slide.innerHTML =
-                '<div class="food-gallery__card-inner">' +
-                '<img src="' + item.base64Image + '" alt="' + escapeHtml(item.name) + '" loading="lazy" draggable="false">' +
-                '<div class="food-gallery__card-overlay"><span>' + escapeHtml(item.name) + '</span></div>' +
-                '</div>';
-            track.appendChild(slide);
-        });
-
+    function bindCardClicks() {
         track.querySelectorAll('.food-gallery__card').forEach(function (card, cardIndex) {
             card.addEventListener('click', function () {
                 if (suppressLightboxClick) {
@@ -111,6 +76,41 @@
                 }
             });
         });
+    }
+
+    function render() {
+        items = loadItemsFromDom();
+
+        if (items.length === 0) {
+            if (emptyEl) {
+                emptyEl.hidden = false;
+            }
+            if (viewport) {
+                viewport.hidden = true;
+            }
+            if (prevBtn) {
+                prevBtn.disabled = true;
+            }
+            if (nextBtn) {
+                nextBtn.disabled = true;
+            }
+            return;
+        }
+
+        if (emptyEl) {
+            emptyEl.hidden = true;
+        }
+        if (viewport) {
+            viewport.hidden = false;
+        }
+        if (prevBtn) {
+            prevBtn.disabled = false;
+        }
+        if (nextBtn) {
+            nextBtn.disabled = false;
+        }
+
+        bindCardClicks();
 
         index = Math.min(index, Math.max(0, items.length - 1));
         goTo(index, false);
@@ -126,7 +126,7 @@
         if (!lightbox || !lightboxImg) {
             return;
         }
-        lightboxImg.src = item.base64Image;
+        lightboxImg.src = item.imageUrl;
         lightboxImg.alt = item.name;
         lightboxCaption.textContent = item.name;
         lightbox.hidden = false;
@@ -244,6 +244,22 @@
         isDragging = false;
         isPaused = false;
         snapAfterDrag();
+    }
+
+    if (!track || !viewport || !prevBtn || !nextBtn) {
+        const observer = new IntersectionObserver(
+            function (entries) {
+                entries.forEach(function (entry) {
+                    if (entry.isIntersecting) {
+                        section.classList.add('is-visible');
+                        observer.disconnect();
+                    }
+                });
+            },
+            { threshold: 0.15 }
+        );
+        observer.observe(section);
+        return;
     }
 
     prevBtn.addEventListener('click', function () {

@@ -1,5 +1,14 @@
 @extends('layouts.client.app')
 
+@push('styles')
+    <link rel="stylesheet" href="{{ asset('plugins/fontawesome-free/css/all.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/gallery.css') }}">
+@endpush
+
+@push('scripts')
+    <script src="{{ asset('assets/js/gallery-carousel.js') }}" defer></script>
+@endpush
+
 @section('content')
     {{-- ═══════════════════════════════════════
      HERO SECTION

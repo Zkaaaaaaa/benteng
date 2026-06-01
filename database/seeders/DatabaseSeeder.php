@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
             RamesPrefillSeeder::class,
             SiteSettingsSeeder::class,
             SiteSettingsNLSeeder::class,
+            GallerySeeder::class,
         ]);
     }
 }

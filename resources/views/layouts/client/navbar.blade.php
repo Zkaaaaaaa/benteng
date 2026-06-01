@@ -3,6 +3,7 @@
     $isHome = request()->routeIs('client.index', 'client.index-nl');
     $homeUrl = $isEnglish ? route('client.index') : route('client.index-nl');
     $menuLabel = $isEnglish ? 'Menu' : 'Menukaart';
+    $galleryLabel = $isEnglish ? 'Gallery' : 'Galerij';
     $contactLabel = $isEnglish ? 'Locations' : 'Contact';
 @endphp
 
@@ -21,6 +22,7 @@
         <ul class="navbar__menu" id="navMenu">
             <li><a href="{{ $isHome ? '#hero' : $homeUrl . '#hero' }}" class="navbar__link">Home</a></li>
             <li><a href="{{ $isHome ? '#rames' : $homeUrl . '#rames' }}" class="navbar__link">{{ $menuLabel }}</a></li>
+            <li><a href="{{ $isHome ? '#gallery' : $homeUrl . '#gallery' }}" class="navbar__link">{{ $galleryLabel }}</a></li>
             <li><a href="{{ $isHome ? '#locations' : $homeUrl . '#locations' }}" class="navbar__link">{{ $contactLabel }}</a></li>
             <li class="navbar__lang">
                 <a href="{{ route('client.index-nl') }}"

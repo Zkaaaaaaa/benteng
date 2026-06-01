@@ -21,7 +21,7 @@ class HomeController extends Controller
         $ramesSetting = RamesSetting::query()->first(['*']);
         $site = SiteSettingNL::query()->first(['*']);
 
-        $galleryPhotos = $this->galleryPhotosForCarousel();
+        $galleryPhotos = $this->galleryPhotos();
 
         return view('client.index-nl', compact('categories', 'homeCategories', 'site', 'ramesMenu', 'ramesSetting', 'galleryPhotos'));
     }
@@ -35,7 +35,7 @@ class HomeController extends Controller
         $ramesSetting = RamesSetting::query()->first(['*']);
         $site = SiteSetting::query()->first(['*']);
 
-        $galleryPhotos = $this->galleryPhotosForCarousel();
+        $galleryPhotos = $this->galleryPhotos();
 
         return view('client.index', compact('categories', 'homeCategories', 'site', 'ramesMenu', 'ramesSetting', 'galleryPhotos'));
     }
@@ -53,17 +53,8 @@ class HomeController extends Controller
             ->get();
     }
 
-    private function galleryPhotosForCarousel()
+    private function galleryPhotos()
     {
-        return GalleryPhoto::query()
-            ->latest()
-            ->get()
-            ->map(fn (GalleryPhoto $photo) => [
-                'id' => $photo->id,
-                'name' => $photo->name,
-                'imageUrl' => $photo->image_url,
-                'uploadedAt' => $photo->created_at?->toIso8601String(),
-            ])
-            ->values();
+        return GalleryPhoto::query()->latest()->get();
     }
 }
