@@ -40,11 +40,11 @@ class RamesPrefillSeeder extends Seeder
 
         // Mapping sekali dari slug kategori menu (data awal), bukan dipakai runtime.
         $slugToRames = [
-            'rames-klein' => ['section' => 'basis', 'subsection' => null],
-            'kip' => ['section' => 'vlees_of_vis', 'subsection' => 'kip'],
-            'vlees' => ['section' => 'vlees_of_vis', 'subsection' => 'vlees'],
-            'vis' => ['section' => 'vlees_of_vis', 'subsection' => 'vis'],
-            'groente' => ['section' => 'groenten', 'subsection' => null],
+            'basisgerechten' => ['section' => 'basis', 'subsection' => null],
+            'kipgerechten' => ['section' => 'vlees_of_vis', 'subsection' => 'kip'],
+            'rundvleesgerechten' => ['section' => 'vlees_of_vis', 'subsection' => 'vlees'],
+            'visgerechten' => ['section' => 'vlees_of_vis', 'subsection' => 'vis'],
+            'groentegerechten' => ['section' => 'groenten', 'subsection' => null],
         ];
 
         RamesItem::query()->delete();

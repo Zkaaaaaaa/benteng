@@ -145,6 +145,7 @@
                                     <strong>{{ strtoupper($product->name) }} @if($product->is_spicy)<span class="chili">🌶</span>@endif</strong>
                                     @php($description = $product->description_nl ?: ($product->description_en ?: $product->description))
                                     @if($description)<span>{{ $description }}</span>@endif
+                                    <x-allergen-badges :product="$product" locale="nl" />
                                 </li>
                             @empty
                                 <li class="step__item"><span>Nog geen basis ingesteld.</span></li>
@@ -164,6 +165,7 @@
                                         <strong>{{ strtoupper($product->name) }} @if($product->is_spicy)<span class="chili">🌶</span>@endif</strong>
                                         @php($description = $product->description_nl ?: ($product->description_en ?: $product->description))
                                         @if($description)<span>{{ $description }}</span>@endif
+                                        <x-allergen-badges :product="$product" locale="nl" />
                                     </li>
                                 @empty
                                     <li class="step__item"><span>-</span></li>
@@ -178,6 +180,7 @@
                                         <strong>{{ strtoupper($product->name) }} @if($product->is_spicy)<span class="chili">🌶</span>@endif</strong>
                                         @php($description = $product->description_nl ?: ($product->description_en ?: $product->description))
                                         @if($description)<span>{{ $description }}</span>@endif
+                                        <x-allergen-badges :product="$product" locale="nl" />
                                     </li>
                                 @empty
                                     <li class="step__item"><span>-</span></li>
@@ -192,6 +195,7 @@
                                         <strong>{{ strtoupper($product->name) }} @if($product->is_spicy)<span class="chili">🌶</span>@endif</strong>
                                         @php($description = $product->description_nl ?: ($product->description_en ?: $product->description))
                                         @if($description)<span>{{ $description }}</span>@endif
+                                        <x-allergen-badges :product="$product" locale="nl" />
                                     </li>
                                 @empty
                                     <li class="step__item"><span>-</span></li>
@@ -211,6 +215,7 @@
                                     <strong>{{ strtoupper($product->name) }} @if($product->is_spicy)<span class="chili">🌶</span>@endif</strong>
                                     @php($description = $product->description_nl ?: ($product->description_en ?: $product->description))
                                     @if($description)<span>{{ $description }}</span>@endif
+                                    <x-allergen-badges :product="$product" locale="nl" />
                                 </li>
                             @empty
                                 <li class="step__item"><span>Nog geen groenten ingesteld.</span></li>
@@ -250,6 +255,7 @@
                                 <strong>{{ $product->name }}</strong>
                                 @php($description = $product->description_nl ?: ($product->description_en ?: $product->description))
                                 @if($description)<p>{{ $description }}</p>@endif
+                                <x-allergen-badges :product="$product" locale="nl" />
                             </div>
                             <span>€{{ number_format((float) $product->price, 2, ',', '.') }}</span>
                         </div>
