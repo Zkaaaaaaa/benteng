@@ -39,6 +39,8 @@ class ProductController extends Controller
             'description_en' => 'nullable|string',
             'description_nl' => 'nullable|string',
             'image'          => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'allergens'      => 'nullable|array',
+            'allergens.*'    => ['string', Rule::in(Product::allergenKeys())],
         ]);
 
         $imagePath = null;
@@ -57,6 +59,7 @@ class ProductController extends Controller
             'description_nl' => $request->description_nl,
             'description'    => $request->description_en ?: $request->description_nl,
             'image'          => $imagePath,
+            'allergens'      => Product::normalizeAllergens($request->input('allergens')),
         ]);
 
         return back()->with('success', 'Produk baru berhasil ditambahkan!');
@@ -79,6 +82,8 @@ class ProductController extends Controller
             'description_en' => 'nullable|string',
             'description_nl' => 'nullable|string',
             'image'          => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'allergens'      => 'nullable|array',
+            'allergens.*'    => ['string', Rule::in(Product::allergenKeys())],
         ]);
 
         if ($request->hasFile('image')) {
@@ -97,6 +102,7 @@ class ProductController extends Controller
             'description_nl' => $request->description_nl,
             'description'    => $request->description_en ?: $request->description_nl,
             'image'          => $imagePath,
+            'allergens'      => Product::normalizeAllergens($request->input('allergens')),
         ]);
 
         return back()->with('success', 'Data produk berhasil diperbarui!');

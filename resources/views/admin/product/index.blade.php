@@ -68,6 +68,7 @@
                     <th>Nama Produk</th>
                     <th>Kategori</th>
                     <th>Harga</th>
+                    <th style="width:90px;">Alergen</th>
                     <th style="width:180px; text-align:right; padding-right:24px;">Aksi</th>
                 </tr>
             </thead>
@@ -108,9 +109,14 @@
                                 {{ number_format($product->price, 2, ',', '.') }}</strong>
                         </td>
                         <td>
+                            <span style="font-size:12px; color:var(--btg-muted); white-space:nowrap;">
+                                {{ $product->activeAllergenCount() }} Alergen
+                            </span>
+                        </td>
+                        <td>
                             <div class="action-group" style="justify-content:flex-end;">
                                 <button class="btn-action edit"
-                                    onclick="openEdit('{{ $product->id }}', '{{ addslashes($product->name) }}', '{{ $product->category_id }}', '{{ $product->price }}', @js($product->description_en), @js($product->description_nl), '{{ $product->image ? $product->image_url : '' }}')">
+                                    onclick="openEdit('{{ $product->id }}', '{{ addslashes($product->name) }}', '{{ $product->category_id }}', '{{ $product->price }}', @js($product->description_en), @js($product->description_nl), '{{ $product->image ? $product->image_url : '' }}', @js($product->activeAllergenKeys()))">
                                     <i class="fas fa-pen"></i> Edit
                                 </button>
                                 <button class="btn-action delete"
@@ -122,7 +128,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="6">
+                        <td colspan="7">
                             <div class="empty-state">
                                 <div class="empty-icon"><i class="fas fa-utensils"></i></div>
                                 <p>Belum ada produk. Mulai dengan menambahkan produk pertama.</p>
@@ -172,13 +178,21 @@
         });
 
         // ── Edit ────────────────────────────────────────────
-        function openEdit(id, name, categoryId, price, descriptionEn, descriptionNl, imageSrc) {
+        function setAllergenCheckboxes(selectedKeys) {
+            const keys = Array.isArray(selectedKeys) ? selectedKeys : [];
+            document.querySelectorAll('#modal-edit input[name="allergens[]"]').forEach(checkbox => {
+                checkbox.checked = keys.includes(checkbox.value);
+            });
+        }
+
+        function openEdit(id, name, categoryId, price, descriptionEn, descriptionNl, imageSrc, allergenKeys) {
             document.getElementById('edit-id').value = id;
             document.getElementById('edit-name').value = name;
             document.getElementById('edit-category_id').value = categoryId;
             document.getElementById('edit-price').value = price;
             document.getElementById('edit-description_en').value = descriptionEn ?? '';
             document.getElementById('edit-description_nl').value = descriptionNl ?? '';
+            setAllergenCheckboxes(allergenKeys ?? []);
 
             // Preview Image handling
             if (imageSrc) {

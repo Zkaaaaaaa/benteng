@@ -78,6 +78,10 @@
                         </div>
                     </div>
                 </div>
+
+                @include('admin.product.partials.allergen-fields', [
+                    'selectedKeys' => old('allergens', []),
+                ])
             </div>
 
             <div class="btg-modal-footer" style="border-top: 1px solid var(--btg-border); padding-top: 16px;">

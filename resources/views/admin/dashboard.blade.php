@@ -466,6 +466,7 @@
                             <th>Nama Produk</th>
                             <th>Kategori</th>
                             <th>Harga</th>
+                            <th>Alergen</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -492,8 +493,11 @@
                                 <td style="font-weight:600; font-size:13px;">
                                     € {{ number_format($product->price, 2, ',', '.') }}
                                 </td>
+                                <td style="font-size:12px; color:var(--btg-muted); white-space:nowrap;">
+                                    {{ $product->activeAllergenCount() }} Alergen
+                                </td>
                                 <td>
-                                    <a href="{{ route('admin.products.edit', $product) }}"
+                                    <a href="{{ route('admin.products.index') }}"
                                         style="font-size:12px; color:var(--btg-accent); text-decoration:none;">
                                         Edit
                                     </a>
@@ -501,7 +505,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="5"
+                                <td colspan="6"
                                     style="text-align:center; color:var(--btg-muted); font-size:13px; padding:24px 0;">
                                     Belum ada produk.
                                 </td>

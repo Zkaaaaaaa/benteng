@@ -89,6 +89,42 @@ class Product extends Model
         return number_format((float) $this->price, 2, ',', '.');
     }
 
+    /** @return list<string> */
+    public static function allergenKeys(): array
+    {
+        return array_keys(self::allergenCatalog());
+    }
+
+    /** @param  list<string>|null  $selected */
+    public static function normalizeAllergens(?array $selected): array
+    {
+        $allowed = self::allergenKeys();
+        $active = array_values(array_intersect(
+            array_map('strval', $selected ?? []),
+            $allowed
+        ));
+        $lookup = array_fill_keys($active, true);
+
+        return collect($allowed)
+            ->mapWithKeys(fn (string $key) => [$key => isset($lookup[$key])])
+            ->all();
+    }
+
+    /** @return list<string> */
+    public function activeAllergenKeys(): array
+    {
+        return collect($this->allergens ?? [])
+            ->filter(fn ($active) => (bool) $active)
+            ->keys()
+            ->values()
+            ->all();
+    }
+
+    public function activeAllergenCount(): int
+    {
+        return count($this->activeAllergenKeys());
+    }
+
     /** @return array<string, array{icon: string, en: string, nl: string}> */
     public static function allergenCatalog(): array
     {

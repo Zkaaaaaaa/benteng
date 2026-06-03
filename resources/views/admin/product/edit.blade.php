@@ -84,6 +84,10 @@
                         </div>
                     </div>
                 </div>
+
+                @include('admin.product.partials.allergen-fields', [
+                    'selectedKeys' => old('allergens', []),
+                ])
             </div>
 
             <div class="btg-modal-footer" style="border-top: 1px solid var(--btg-border); padding-top: 16px;">
@@ -111,6 +115,7 @@
             document.getElementById('edit-price').value = @json(old('price', ''));
             document.getElementById('edit-description_en').value = @json(old('description_en', ''));
             document.getElementById('edit-description_nl').value = @json(old('description_nl', ''));
+            setAllergenCheckboxes(@json(old('allergens', [])));
 
             openModal('modal-edit');
         });
