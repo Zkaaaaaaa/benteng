@@ -125,28 +125,28 @@ class Product extends Model
         return count($this->activeAllergenKeys());
     }
 
-    /** @return array<string, array{en: string, nl: string}> */
+    /** @return array<string, array{icon: string, en: string, nl: string}> */
     public static function allergenCatalog(): array
     {
         return [
-            'egg' => ['en' => 'Egg', 'nl' => 'Ei'],
-            'gluten' => ['en' => 'Gluten', 'nl' => 'Gluten'],
-            'milk' => ['en' => 'Milk', 'nl' => 'Melk'],
-            'mustard' => ['en' => 'Mustard', 'nl' => 'Mosterd'],
-            'peanuts' => ['en' => 'Peanuts', 'nl' => 'Pinda'],
-            'lupine' => ['en' => 'Lupine', 'nl' => 'Lupine'],
-            'nuts' => ['en' => 'Nuts', 'nl' => 'Noten'],
-            'crustaceans' => ['en' => 'Crustaceans', 'nl' => 'Schaaldieren'],
-            'fish' => ['en' => 'Fish', 'nl' => 'Vis'],
-            'soy' => ['en' => 'Soy', 'nl' => 'Soja'],
-            'sesame' => ['en' => 'Sesame', 'nl' => 'Sesam'],
-            'celery' => ['en' => 'Celery', 'nl' => 'Selderij'],
-            'molluscs' => ['en' => 'Molluscs', 'nl' => 'Weekdieren'],
-            'sulphites' => ['en' => 'Sulphites', 'nl' => 'Sulfiet'],
+            'egg' => ['icon' => '🥚', 'en' => 'Egg', 'nl' => 'Ei'],
+            'gluten' => ['icon' => '🌾', 'en' => 'Gluten', 'nl' => 'Gluten'],
+            'milk' => ['icon' => '🥛', 'en' => 'Milk', 'nl' => 'Melk'],
+            'mustard' => ['icon' => '🟡', 'en' => 'Mustard', 'nl' => 'Mosterd'],
+            'peanuts' => ['icon' => '🥜', 'en' => 'Peanuts', 'nl' => 'Pinda'],
+            'lupine' => ['icon' => '🌿', 'en' => 'Lupine', 'nl' => 'Lupine'],
+            'nuts' => ['icon' => '🌰', 'en' => 'Nuts', 'nl' => 'Noten'],
+            'crustaceans' => ['icon' => '🦐', 'en' => 'Crustaceans', 'nl' => 'Schaaldieren'],
+            'fish' => ['icon' => '🐟', 'en' => 'Fish', 'nl' => 'Vis'],
+            'soy' => ['icon' => '🌱', 'en' => 'Soy', 'nl' => 'Soja'],
+            'sesame' => ['icon' => '⚪', 'en' => 'Sesame', 'nl' => 'Sesam'],
+            'celery' => ['icon' => '🥬', 'en' => 'Celery', 'nl' => 'Selderij'],
+            'molluscs' => ['icon' => '🐚', 'en' => 'Molluscs', 'nl' => 'Weekdieren'],
+            'sulphites' => ['icon' => '🍷', 'en' => 'Sulphites', 'nl' => 'Sulfiet'],
         ];
     }
 
-    /** @return list<array{key: string, label: string}> */
+    /** @return list<array{key: string, icon: string, label: string}> */
     public function activeAllergenBadges(string $locale = 'en'): array
     {
         $localeKey = $locale === 'nl' ? 'nl' : 'en';
@@ -156,6 +156,7 @@ class Product extends Model
             ->filter(fn (array $meta, string $key) => ! empty($flags[$key]))
             ->map(fn (array $meta, string $key) => [
                 'key' => $key,
+                'icon' => $meta['icon'],
                 'label' => $meta[$localeKey],
             ])
             ->values()
