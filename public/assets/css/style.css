@@ -779,7 +779,7 @@ ul {
     margin-bottom: 0.3rem;
 }
 
-.step__item span {
+.step__item span:not(.allergen-badges):not(.allergen-badge) {
     display: block;
     color: var(--clr-grey);
     font-size: 0.95rem;
@@ -791,14 +791,17 @@ ul {
 }
 
 .allergen-badges {
-    display: flex;
+    display: inline-flex;
+    flex-direction: row;
     flex-wrap: wrap;
-    gap: 0.3rem;
+    align-items: center;
+    gap: 0.35rem;
     margin-top: 0.3rem;
 }
 
 .allergen-badge {
     display: inline-block;
+    flex-shrink: 0;
     font-size: 0.8rem;
     line-height: 1;
 }
@@ -905,10 +908,22 @@ ul {
     margin: 2px 0 0;
 }
 
-.full-menu-item span {
+.full-menu-item > span {
     white-space: nowrap;
     font-weight: 700;
     color: var(--clr-red);
+}
+
+.full-menu-item .allergen-badges {
+    display: inline-flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.35rem;
+    margin-top: 0.25rem;
+    font-weight: 400;
+    color: inherit;
+    white-space: normal;
 }
 
 /* Leaflet */
