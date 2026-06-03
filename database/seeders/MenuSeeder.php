@@ -21,11 +21,11 @@ class MenuSeeder extends Seeder
                 'sort_order' => 1,
                 'show_on_home' => false,
                 'products' => [
-                    ['name' => 'Nasi Putih', 'allergens' => []],
-                    ['name' => 'Nasi Goreng', 'allergens' => ['crustaceans']],
-                    ['name' => 'Nasi Kuning', 'allergens' => ['crustaceans']],
-                    ['name' => 'Bami Goreng', 'allergens' => ['gluten', 'crustaceans']],
-                    ['name' => 'Mihoen Goreng', 'allergens' => ['gluten', 'crustaceans', 'soy']],
+                    ['name' => 'Nasi Putih', 'allergens' => [], 'price' => 2.95],
+                    ['name' => 'Nasi Goreng', 'allergens' => ['crustaceans', 'fish'], 'price' => 4.25],
+                    ['name' => 'Nasi Kuning', 'allergens' => [], 'price' => 4.25],
+                    ['name' => 'Bami Goreng', 'allergens' => ['gluten', 'crustaceans', 'egg', 'fish', 'soy'], 'price' => 4.25],
+                    ['name' => 'Mihoen Goreng', 'allergens' => ['gluten', 'crustaceans', 'fish', 'soy'], 'price' => 4.25],
                 ],
             ],
             [
@@ -34,9 +34,9 @@ class MenuSeeder extends Seeder
                 'sort_order' => 2,
                 'show_on_home' => true,
                 'products' => [
-                    ['name' => 'Smoor', 'allergens' => ['gluten']],
-                    ['name' => 'Rendang', 'allergens' => []],
-                    ['name' => 'Blado', 'allergens' => [], 'is_spicy' => true],
+                    ['name' => 'Smoor', 'allergens' => ['gluten', 'soy'], 'price' => 3.25],
+                    ['name' => 'Rendang', 'allergens' => [], 'is_spicy' => true, 'price' => 3.25],
+                    ['name' => 'Blado', 'allergens' => ['crustaceans'], 'is_spicy' => true, 'price' => 3.25],
                 ],
             ],
             [
@@ -46,11 +46,11 @@ class MenuSeeder extends Seeder
                 'sort_order' => 3,
                 'show_on_home' => true,
                 'products' => [
-                    ['name' => 'Ayam Kecap', 'allergens' => ['gluten', 'soy']],
-                    ['name' => 'Ayam Kerrie', 'allergens' => ['soy']],
-                    ['name' => 'Ayam Pedes', 'allergens' => ['crustaceans'], 'is_spicy' => true],
-                    ['name' => 'Ayam Asem Manis', 'allergens' => ['gluten']],
-                    ['name' => 'Sate Ayam', 'allergens' => ['gluten', 'soy']],
+                    ['name' => 'Ayam Kecap', 'allergens' => ['gluten', 'egg', 'soy'], 'price' => 3.00],
+                    ['name' => 'Ayam Kerrie', 'allergens' => [], 'price' => 3.00],
+                    ['name' => 'Ayam Pedes', 'allergens' => ['crustaceans'], 'is_spicy' => true, 'price' => 3.00],
+                    ['name' => 'Ayam Asem Manis', 'allergens' => ['gluten'], 'price' => 3.00],
+                    ['name' => 'Sate Ayam', 'allergens' => ['gluten', 'soy'], 'price' => 7.50],
                 ],
             ],
             [
@@ -60,7 +60,7 @@ class MenuSeeder extends Seeder
                 'sort_order' => 4,
                 'show_on_home' => true,
                 'products' => [
-                    ['name' => 'Ikan Bali', 'allergens' => ['fish'], 'is_spicy' => true],
+                    ['name' => 'Ikan Bali', 'allergens' => ['fish'], 'is_spicy' => true, 'price' => 4.35],
                 ],
             ],
             [
@@ -70,19 +70,19 @@ class MenuSeeder extends Seeder
                 'sort_order' => 5,
                 'show_on_home' => true,
                 'products' => [
-                    ['name' => 'Sayur Lodeh', 'allergens' => ['soy']],
-                    ['name' => 'Sayur Boontjes', 'allergens' => ['crustaceans']],
-                    ['name' => 'Asinan', 'allergens' => ['lupine']],
-                    ['name' => 'Oerap', 'allergens' => []],
-                    ['name' => 'Tumis Broccoli', 'allergens' => ['soy']],
-                    ['name' => 'Tumis Tauge', 'allergens' => ['soy']],
-                    ['name' => 'Tumis Kousenband', 'allergens' => ['gluten', 'soy']],
-                    ['name' => 'Tempe Pete', 'allergens' => ['soy']],
-                    ['name' => 'Terong Blado', 'allergens' => ['gluten'], 'is_spicy' => true],
-                    ['name' => 'Paksoi', 'allergens' => ['soy']],
-                    ['name' => 'Telor Pedes', 'allergens' => ['egg'], 'is_spicy' => true],
-                    ['name' => 'Gado-Gado', 'allergens' => ['egg', 'soy']],
-                    ['name' => 'Sate Tofu', 'allergens' => ['crustaceans', 'soy']],
+                    ['name' => 'Sayur Lodeh', 'allergens' => [], 'price' => 2.30],
+                    ['name' => 'Sayur Boontjes', 'allergens' => ['crustaceans'], 'price' => 2.30],
+                    ['name' => 'Asinan', 'allergens' => ['peanuts'], 'price' => 2.30],
+                    ['name' => 'Oerap', 'allergens' => [], 'price' => 2.30],
+                    ['name' => 'Tumis Broccoli', 'allergens' => ['fish'], 'price' => 2.30],
+                    ['name' => 'Tumis Tauge', 'allergens' => ['fish'], 'price' => 2.30],
+                    ['name' => 'Tumis Kousenband', 'allergens' => ['gluten', 'fish', 'soy'], 'price' => 2.30],
+                    ['name' => 'Tempe Pete', 'allergens' => ['crustaceans', 'soy'], 'price' => 2.75],
+                    ['name' => 'Terong Blado', 'allergens' => ['crustaceans'], 'is_spicy' => true, 'price' => 2.75],
+                    ['name' => 'Paksoi', 'allergens' => ['fish'], 'price' => 2.30],
+                    ['name' => 'Telor Pedes', 'allergens' => ['egg', 'crustaceans'], 'is_spicy' => true, 'price' => 1.45],
+                    ['name' => 'Gado-Gado', 'allergens' => ['egg', 'soy'], 'price' => 8.50],
+                    ['name' => 'Sate Tofu', 'allergens' => [], 'price' => 4.50],
                 ],
             ],
             [
@@ -91,10 +91,10 @@ class MenuSeeder extends Seeder
                 'sort_order' => 6,
                 'show_on_home' => false,
                 'products' => [
-                    ['name' => 'Kroepoek', 'allergens' => ['gluten'], 'price' => 2.75, 'unit_label' => null],
-                    ['name' => 'Spekkoek', 'allergens' => ['gluten', 'milk'], 'price' => 3.25, 'unit_label' => null],
-                    ['name' => 'Lemper', 'allergens' => [], 'price' => 3.35, 'unit_label' => null],
-                    ['name' => 'Loempia', 'allergens' => ['gluten'], 'price' => 3.35, 'unit_label' => null],
+                    ['name' => 'Kroepoek', 'allergens' => [], 'price' => 2.75],
+                    ['name' => 'Spekkoek', 'allergens' => ['egg', 'gluten', 'milk'], 'price' => 2.95],
+                    ['name' => 'Lemper', 'allergens' => [], 'price' => 2.95],
+                    ['name' => 'Loempia', 'allergens' => ['gluten'], 'price' => 2.95],
                 ],
             ],
         ];
@@ -111,17 +111,17 @@ class MenuSeeder extends Seeder
             foreach ($products as $productSort => $productData) {
                 Product::create([
                     'category_id' => $category->id,
-                    'name'        => $productData['name'],
-                    'slug'        => Str::slug($productData['name']) . '-' . $category->slug,
+                    'name' => $productData['name'],
+                    'slug' => Str::slug($productData['name']).'-'.$category->slug,
                     'description' => $productData['description'] ?? null,
-                    'price'       => $productData['price'] ?? 3.50,
-                    'unit_label'  => array_key_exists('unit_label', $productData)
+                    'price' => $productData['price'] ?? 3.50,
+                    'unit_label' => array_key_exists('unit_label', $productData)
                         ? $productData['unit_label']
                         : '/ 100 gr.',
-                    'is_spicy'    => $productData['is_spicy'] ?? false,
-                    'allergens'   => $this->allergens($productData['allergens'] ?? []),
-                    'sort_order'  => $productSort + 1,
-                    'is_active'   => true,
+                    'is_spicy' => $productData['is_spicy'] ?? false,
+                    'allergens' => $this->allergens($productData['allergens'] ?? []),
+                    'sort_order' => $productSort + 1,
+                    'is_active' => true,
                 ]);
             }
         }
