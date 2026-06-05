@@ -806,6 +806,47 @@ ul {
     line-height: 1;
 }
 
+.allergen-legend {
+    margin-top: 2rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--clr-border);
+    text-align: center;
+}
+
+.allergen-legend__title {
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--clr-grey);
+    margin-bottom: 0.75rem;
+}
+
+.allergen-legend__items {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem 1rem;
+}
+
+.allergen-legend__item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.72rem;
+    color: var(--clr-grey);
+    line-height: 1.3;
+}
+
+.allergen-legend__icon {
+    font-size: 0.85rem;
+    line-height: 1;
+}
+
+.allergen-legend__label {
+    font-weight: 500;
+}
+
 .step--wide .step__cols3 {
     display: grid;
     grid-template-columns: repeat(3, 1fr);

@@ -239,6 +239,8 @@
             <div class="text-center mt-8">
                 <button type="button" class="btn btn--outline" id="open-full-menu">{{ $ramesSetting->button_label_en ?? 'View Full Menu' }}</button>
             </div>
+
+            <x-allergen-legend locale="en" />
         </div>
     </section>
 
