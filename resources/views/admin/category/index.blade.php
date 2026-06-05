@@ -61,11 +61,16 @@
                     ({{ $categories->count() }})
                 </span>
             </div>
+            <div style="font-size:12px; color:var(--btg-muted); font-weight:400;">
+                Drag baris untuk mengatur urutan tampilan di Full Menu
+            </div>
         </div>
 
         <table class="cat-table">
             <thead>
                 <tr>
+                    <th style="width:40px;"></th>
+                    <th style="width:60px;">Sort</th>
                     <th style="width:60px;">No</th>
                     <th>Nama Kategori</th>
                     <th>Slug</th>
@@ -73,7 +78,7 @@
                     <th style="width:160px; text-align:right; padding-right:24px;">Aksi</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="category-sortable">
                 @php
                     $dotColors = [
                         '#c0392b',
@@ -88,7 +93,13 @@
                 @endphp
 
                 @forelse($categories as $index => $category)
-                    <tr>
+                    <tr class="category-row" draggable="true" data-category-id="{{ $category->id }}">
+                        <td>
+                            <span class="category-drag-handle" title="Drag untuk mengurutkan">
+                                <i class="fas fa-grip-vertical"></i>
+                            </span>
+                        </td>
+                        <td><span class="row-num category-sort-value">{{ $category->sort_order }}</span></td>
                         <td><span class="row-num">{{ $index + 1 }}</span></td>
                         <td>
                             <div class="cat-name-cell">
@@ -119,7 +130,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="5">
+                        <td colspan="7">
                             <div class="empty-state">
                                 <div class="empty-icon"><i class="fas fa-tags"></i></div>
                                 <p>Belum ada kategori. Mulai dengan menambahkan kategori pertama.</p>
@@ -140,6 +151,34 @@
     @include('admin.category.delete')
 
 @endsection
+
+@push('styles')
+    <style>
+        .category-drag-handle {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            color: var(--btg-muted);
+            cursor: grab;
+            border-radius: 6px;
+        }
+
+        .category-drag-handle:active {
+            cursor: grabbing;
+        }
+
+        .category-row.dragging {
+            opacity: 0.45;
+        }
+
+        .category-row.drag-over {
+            outline: 2px dashed var(--btg-accent);
+            outline-offset: -2px;
+        }
+    </style>
+@endpush
 
 @push('scripts')
     <script>
@@ -195,6 +234,80 @@
 
             openModal('modal-delete');
         }
+
+        // ── Drag & drop sort ────────────────────────────────
+        (function initCategorySortable() {
+            const tbody = document.getElementById('category-sortable');
+            if (!tbody) return;
+
+            let draggedRow = null;
+
+            const updateSortLabels = () => {
+                tbody.querySelectorAll('.category-row').forEach((row, index) => {
+                    const sortEl = row.querySelector('.category-sort-value');
+                    if (sortEl) sortEl.textContent = index + 1;
+                });
+            };
+
+            const saveOrder = () => {
+                const order = Array.from(tbody.querySelectorAll('.category-row'))
+                    .map(row => parseInt(row.dataset.categoryId, 10))
+                    .filter(id => !Number.isNaN(id));
+
+                if (order.length === 0) return;
+
+                fetch(@json(route('admin.categories.reorder')), {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        'Accept': 'application/json',
+                    },
+                    body: JSON.stringify({ order }),
+                }).catch(() => {
+                    alert('Gagal menyimpan urutan kategori. Silakan refresh halaman.');
+                });
+            };
+
+            tbody.querySelectorAll('.category-row').forEach(row => {
+                row.addEventListener('dragstart', (e) => {
+                    draggedRow = row;
+                    row.classList.add('dragging');
+                    e.dataTransfer.effectAllowed = 'move';
+                    e.dataTransfer.setData('text/plain', row.dataset.categoryId);
+                });
+
+                row.addEventListener('dragend', () => {
+                    row.classList.remove('dragging');
+                    tbody.querySelectorAll('.category-row').forEach(r => r.classList.remove('drag-over'));
+                    if (draggedRow) {
+                        updateSortLabels();
+                        saveOrder();
+                    }
+                    draggedRow = null;
+                });
+
+                row.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    e.dataTransfer.dropEffect = 'move';
+                    if (!draggedRow || draggedRow === row) return;
+
+                    row.classList.add('drag-over');
+                    const rect = row.getBoundingClientRect();
+                    const after = e.clientY > rect.top + rect.height / 2;
+                    tbody.insertBefore(draggedRow, after ? row.nextSibling : row);
+                });
+
+                row.addEventListener('dragleave', () => {
+                    row.classList.remove('drag-over');
+                });
+
+                row.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    row.classList.remove('drag-over');
+                });
+            });
+        })();
 
         // ── Auto-dismiss alerts ─────────────────────────────
         setTimeout(() => {

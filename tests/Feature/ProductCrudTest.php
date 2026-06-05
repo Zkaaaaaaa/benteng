@@ -117,6 +117,26 @@ class ProductCrudTest extends TestCase
         $response->assertSessionHasErrors('name');
     }
 
+    /**
+     * @test
+     */
+    public function admin_can_reorder_categories()
+    {
+        $first = Category::factory()->create(['name' => 'Pertama', 'sort_order' => 1]);
+        $second = Category::factory()->create(['name' => 'Kedua', 'sort_order' => 2]);
+        $third = Category::factory()->create(['name' => 'Ketiga', 'sort_order' => 3]);
+
+        $response = $this->actingAs($this->admin)
+            ->postJson(route('admin.categories.reorder'), [
+                'order' => [$third->id, $first->id, $second->id],
+            ]);
+
+        $response->assertOk()->assertJson(['success' => true]);
+        $this->assertDatabaseHas('categories', ['id' => $third->id, 'sort_order' => 1]);
+        $this->assertDatabaseHas('categories', ['id' => $first->id, 'sort_order' => 2]);
+        $this->assertDatabaseHas('categories', ['id' => $second->id, 'sort_order' => 3]);
+    }
+
     // ══════════════════════════════════════
     // PRODUCT TESTS
     // ══════════════════════════════════════

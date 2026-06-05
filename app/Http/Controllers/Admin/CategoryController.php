@@ -14,7 +14,10 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categories = Category::latest()->get();
+        $categories = Category::query()
+            ->withCount('products')
+            ->ordered()
+            ->get();
 
         return view('admin.category.index', compact('categories'));
     }
@@ -29,11 +32,31 @@ class CategoryController extends Controller
         ]);
 
         Category::create([
-            'name' => $request->name,
-            'slug' => Str::slug($request->name),
+            'name'       => $request->name,
+            'slug'       => Str::slug($request->name),
+            'sort_order' => (int) Category::query()->max('sort_order') + 1,
         ]);
 
         return back()->with('success', 'Kategori baru berhasil ditambahkan!');
+    }
+
+    /**
+     * Memperbarui urutan kategori (drag & drop).
+     */
+    public function reorder(Request $request)
+    {
+        $validated = $request->validate([
+            'order'   => 'required|array',
+            'order.*' => 'integer|exists:categories,id',
+        ]);
+
+        foreach ($validated['order'] as $position => $id) {
+            Category::query()
+                ->whereKey($id)
+                ->update(['sort_order' => $position + 1]);
+        }
+
+        return response()->json(['success' => true]);
     }
 
     /**

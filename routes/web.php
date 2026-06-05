@@ -30,6 +30,7 @@ Route::middleware(['auth', 'verified'])
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
         // Jangan pakai ->names() lagi, sudah ditangani ->name('admin.') di atas
+        Route::post('categories/reorder', [CategoryController::class, 'reorder'])->name('categories.reorder');
         Route::resource('categories', CategoryController::class)->except(['show']);
         Route::resource('products', ProductController::class)->except(['show']);
         Route::get('rames/edit', [RamesController::class, 'edit'])->name('rames.edit');
